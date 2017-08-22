@@ -7,7 +7,7 @@ var uglify = require('rollup-plugin-uglify');
 module.exports = {
     entry: 'src/index.js',
     format: 'umd',
-    moduleName: 'lib-model',
+    moduleName: 'canvas-input-method',
     sourceMap: true,
     dest: 'dist/bundle.js',
     // watch: {
