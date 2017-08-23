@@ -10,38 +10,70 @@ var classCallCheck = function (instance, Constructor) {
   }
 };
 
-var Canvas = function Canvas(canvas, ctx) {
-    classCallCheck(this, Canvas);
+var createClass = function () {
+  function defineProperties(target, props) {
+    for (var i = 0; i < props.length; i++) {
+      var descriptor = props[i];
+      descriptor.enumerable = descriptor.enumerable || false;
+      descriptor.configurable = true;
+      if ("value" in descriptor) descriptor.writable = true;
+      Object.defineProperty(target, descriptor.key, descriptor);
+    }
+  }
 
-    this.canvas = canvas;
-    this.ctx = ctx;
-};
+  return function (Constructor, protoProps, staticProps) {
+    if (protoProps) defineProperties(Constructor.prototype, protoProps);
+    if (staticProps) defineProperties(Constructor, staticProps);
+    return Constructor;
+  };
+}();
+
+var Canvas = function () {
+    function Canvas(canvas, ctx) {
+        classCallCheck(this, Canvas);
+
+        this.canvas = canvas;
+        this.ctx = ctx;
+
+        this.styleInit();
+        this.sizeInit();
+
+        this.draw();
+    }
+
+    createClass(Canvas, [{
+        key: 'styleInit',
+        value: function styleInit() {
+            this.canvas.style.position = 'fixed';
+            this.canvas.style.bottom = '0';
+            this.canvas.style.left = '0';
+            this.canvas.style['box-sizing'] = 'border-box';
+        }
+    }, {
+        key: 'sizeInit',
+        value: function sizeInit() {
+            // canvas 的宽高用dom api设置 会有盒模型的问题 考虑border
+            var width = document.body.offsetWidth;
+            var height = width * 0.8;
+
+            this.canvas.width = width;
+            this.canvas.height = height;
+        }
+    }, {
+        key: 'draw',
+        value: function draw() {
+            this.ctx.fillStyle = '#d7d8dc';
+            this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+            this.ctx.fill();
+        }
+    }]);
+    return Canvas;
+}();
 
 var global_canvas = void 0;
 
-var styleInit = function styleInit() {
-    var canvas = global_canvas.canvas;
-    canvas.style.position = 'fixed';
-    canvas.style.bottom = '0';
-    canvas.style.left = '0';
-    canvas.style['box-sizing'] = 'border-box';
-};
-
-var sizeInit = function sizeInit() {
-    // canvas 的宽高用dom api设置 会有盒模型的问题 考虑border
-    var canvas = global_canvas.canvas;
-    var width = document.body.offsetWidth - 2;
-    var height = width * 1.2;
-
-    canvas.width = width;
-    canvas.height = height;
-};
-
 var init = (function (canvas, ctx) {
     global_canvas = new Canvas(canvas, ctx);
-
-    styleInit();
-    sizeInit();
 });
 
 var inputMethod = function inputMethod(dom) {
