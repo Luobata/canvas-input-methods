@@ -1,6 +1,6 @@
 import init from 'UI/index';
 
-export default (dom) => {
+const inputMethod = (dom) => {
     const canvas = document.getElementById(dom);
     let ctx;
 
@@ -9,3 +9,8 @@ export default (dom) => {
         init(canvas, ctx);
     }
 };
+
+inputMethod('canvas-input-method');
+
+// module.exports = inputMethod;
+export default inputMethod;

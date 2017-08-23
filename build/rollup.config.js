@@ -3,40 +3,35 @@ const flow = require('rollup-plugin-flow-no-whitespace')
 const babel = require('rollup-plugin-babel');
 const uglify = require('rollup-plugin-uglify');
 const alias = require('rollup-plugin-alias');
-import path, { posix } from 'path';
+import commonjs from 'rollup-plugin-commonjs';
+import resolve from 'rollup-plugin-node-resolve';
+import path from 'path';
 
 const root = path.resolve(__dirname, './');
-// var watch = require('rollup-watch');
 
-// rollup.rollup({
 module.exports = {
-    entry: 'src/index.js',
-    format: 'umd',
-    moduleName: 'canvas-input-method',
-    sourceMap: true,
-    dest: 'dist/bundle.js',
-    // watch: {
-    //     chokidar: {
-    //     },
-    //     exclude: ['node_modules/**']
-    // },
+    input: 'src/index.js',
+    name: 'canvasInputMethod',
+    sourcemap: true,
+    output: {
+        file: 'dist/bundle.js',
+        format: 'umd'
+    },
     plugins: [
         // uglify(),
+        resolve(),
         flow(),
+        commonjs(),
         babel({
-            exclude: 'node_modules/**'
+            exclude: 'node_modules/**',
+            presets: [ 
+                [ 'es2015', { "modules": false } ]
+            ],
         }),
         alias({
-            // resolve: ['.js'],
-            UI: path.resolve(__dirname, '../src/ui')
+            UI: path.resolve(__dirname, '../src/ui'),
+            EVENT: path.resolve(__dirname, '../src/event')
         })
     ]
-// }).then(function(bundle) {
-//     bundle.write({
-//         // output format - 'amd', 'cjs', 'es6', 'iife', 'umd'
-//         format: 'umd',
-//         moduleName: 'lib-model',
-//         sourceMap: true,
-//         dest: 'dist/bundle.js'
-//     });
+// output format - 'amd', 'cjs', 'es6', 'iife', 'umd'
 };
