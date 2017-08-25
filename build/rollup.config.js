@@ -1,11 +1,12 @@
 const rollup = require('rollup');
-const flow = require('rollup-plugin-flow-no-whitespace')
+//const flow = require('rollup-plugin-flow-no-whitespace')
 const babel = require('rollup-plugin-babel');
 const uglify = require('rollup-plugin-uglify');
 const alias = require('rollup-plugin-alias');
 import commonjs from 'rollup-plugin-commonjs';
 import resolve from 'rollup-plugin-node-resolve';
 import path from 'path';
+import flow from 'rollup-plugin-flow';
 
 const root = path.resolve(__dirname, './');
 
@@ -20,7 +21,11 @@ module.exports = {
     plugins: [
         // uglify(),
         resolve(),
-        flow(),
+        flow(
+            {
+                all: true
+            }
+        ),
         commonjs(),
         babel({
             exclude: 'node_modules/**',

@@ -1,3 +1,5 @@
+import Button from 'UI/button';
+
 export default class Canvas {
     constructor (canvas, ctx) {
         this.canvas = canvas;
@@ -7,6 +9,7 @@ export default class Canvas {
         this.sizeInit();
 
         this.draw();
+        this.buttonInit();
     };
 
     styleInit () {
@@ -23,6 +26,23 @@ export default class Canvas {
 
         this.canvas.width = width;
         this.canvas.height = height;
+    };
+
+    /*
+     * 初始化面板上按钮
+     */
+    buttonInit () {
+        let button = new Button({
+            x: 10,
+            y: 10,
+            width: 20,
+            height: 20,
+            borderRadius: 5,
+            background: '#fff',
+            value: 'Q'
+        });
+
+        button.draw(this.ctx);
     };
 
     draw () {
