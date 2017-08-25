@@ -22,6 +22,13 @@ r // 半径
     ctx.arcTo(x, y, x + w, y, r);
 };
 
+var drawShadow = function drawShadow(ctx, blur, offsetX, offsetY, color) {
+    ctx.shadowColor = color;
+    ctx.shadowBlur = blur;
+    ctx.shadowOffsetX = offsetX;
+    ctx.shadowOffsetY = offsetY;
+};
+
 var classCallCheck = function (instance, Constructor) {
   if (!(instance instanceof Constructor)) {
     throw new TypeError("Cannot call a class as a function");
@@ -47,6 +54,10 @@ var createClass = function () {
 }();
 
 var Button = function () {
+
+    // txt
+
+
     function Button(conf) {
         classCallCheck(this, Button);
 
@@ -55,22 +66,38 @@ var Button = function () {
         this.width = conf.width;
         this.height = conf.height;
         this.borderRadius = conf.borderRadius;
-        this.color = conf.color;
         this.background = conf.background;
+
         this.value = conf.value;
+        this.color = conf.color;
+        this.size = conf.size;
+        this.family = conf.family;
+        this.weight = conf.weight;
     }
 
     createClass(Button, [{
         key: 'draw',
         value: function draw(ctx) {
+            ctx.save();
             ctx.fillStyle = this.background;
             ctx.lineCap = 'square';
 
-            // 绘制圆角矩形
             ctx.beginPath();
+
+            // 绘制圆角矩形
             drawRoundRect(ctx, this.x, this.y, this.width, this.height, this.borderRadius);
-            ctx.fill();
+            // 绘制阴影
+            drawShadow(ctx, 3, 1, 1, '#000');
             ctx.closePath();
+            ctx.fill();
+            // 绘制文字
+
+            ctx.restore();
+            ctx.fillStyle = this.color;
+            ctx.font = this.size + ' ' + this.family;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(this.value, this.x + this.width / 2, this.y + this.height / 2);
         }
     }]);
     return Button;
@@ -119,11 +146,15 @@ var Canvas = function () {
             var button = new Button({
                 x: 10,
                 y: 10,
-                width: 20,
-                height: 20,
+                width: 32,
+                height: 40,
                 borderRadius: 5,
                 background: '#fff',
-                value: 'Q'
+                value: 'Q',
+                size: '16px',
+                family: 'Microsoft yahei',
+                weight: 'bold',
+                color: '#000'
             });
 
             button.draw(this.ctx);

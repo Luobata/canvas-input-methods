@@ -35,11 +35,15 @@ export default class Canvas {
         let button = new Button({
             x: 10,
             y: 10,
-            width: 20,
-            height: 20,
+            width: 32,
+            height: 40,
             borderRadius: 5,
             background: '#fff',
-            value: 'Q'
+            value: 'Q',
+            size: '16px',
+            family: 'Microsoft yahei',
+            weight: 'bold',
+            color: '#000'
         });
 
         button.draw(this.ctx);

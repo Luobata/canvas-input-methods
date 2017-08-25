@@ -17,3 +17,16 @@ export const drawRoundRect = (
     ctx.arcTo(x, y + h, x, y, r);
     ctx.arcTo(x, y, x + w, y, r);
 };
+
+export const drawShadow = (
+    ctx,
+    blur,
+    offsetX,
+    offsetY,
+    color
+) => {
+    ctx.shadowColor = color;
+    ctx.shadowBlur = blur;
+    ctx.shadowOffsetX = offsetX;
+    ctx.shadowOffsetY = offsetY;
+};
