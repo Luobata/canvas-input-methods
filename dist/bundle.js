@@ -104,12 +104,23 @@ var Button = function () {
 }();
 
 var Canvas = function () {
+    // 屏幕对于320的倍率
+    // 字母区的左右间隔
+    // 字母区的上下间隔
+    // 字母宽度
+    // 字母高度
+    // 字母初始位置X
+    // 字母初始位置Y
+    // 字母数组
+
     function Canvas(canvas, ctx) {
         classCallCheck(this, Canvas);
 
         this.canvas = canvas;
         this.ctx = ctx;
 
+        this.alphaInit();
+        this.windowInit();
         this.styleInit();
         this.sizeInit();
 
@@ -118,6 +129,27 @@ var Canvas = function () {
     }
 
     createClass(Canvas, [{
+        key: 'alphaInit',
+        value: function alphaInit() {
+            this.alphas = [];
+
+            this.alphas.push(['q', 'w', 'e', 'r', 'y', 't', 'u', 'i', 'o', 'p']);
+        }
+    }, {
+        key: 'windowInit',
+        value: function windowInit() {
+            var width = document.body.clientWidth;
+            var rate = parseInt(width * 12 / 320, 10);
+            this.rate = rate / 12;
+            this.alphaPaddingWidth = 4 * this.rate;
+            this.alphaPaddingHeight = 8 * this.rate;
+            this.alphaWidth = 27.5 * this.rate;
+            this.alphaHeight = 36 * this.rate;
+
+            this.alphaStartX = (width - this.alphas[0].length * this.alphaWidth - (this.alphas[0].length - 1) * this.alphaPaddingWidth) / 2;
+            this.alphaStartY = 10;
+        }
+    }, {
         key: 'styleInit',
         value: function styleInit() {
             this.canvas.style.position = 'fixed';
@@ -143,21 +175,23 @@ var Canvas = function () {
          * 初始化面板上按钮
          */
         value: function buttonInit() {
-            var button = new Button({
-                x: 10,
-                y: 10,
-                width: 32,
-                height: 40,
-                borderRadius: 5,
-                background: '#fff',
-                value: 'Q',
-                size: '16px',
-                family: 'Microsoft yahei',
-                weight: 'bold',
-                color: '#000'
-            });
-
-            button.draw(this.ctx);
+            for (var i = 0; i < this.alphas[0].length; i++) {
+                var item = this.alphas[i];
+                var button = new Button({
+                    x: this.alphaStartX + i * (this.alphaPaddingWidth + this.alphaWidth),
+                    y: 10,
+                    width: this.alphaWidth,
+                    height: this.alphaHeight,
+                    borderRadius: 5,
+                    background: '#fff',
+                    value: this.alphas[0][i],
+                    size: '16px',
+                    family: 'Microsoft yahei',
+                    weight: 'bold',
+                    color: '#000'
+                });
+                button.draw(this.ctx);
+            }
         }
     }, {
         key: 'draw',
