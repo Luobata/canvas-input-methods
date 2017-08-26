@@ -24,9 +24,10 @@ export default class Canvas {
         this.styleInit();
         this.sizeInit();
 
-        this.draw();
         this.buttonInit();
         this.eventInit();
+
+        this.draw();
     };
 
     /**
@@ -96,17 +97,20 @@ export default class Canvas {
      */
     eventInit () {
         const screenY = window.screen.height;
-        const that = this;
-        this.canvas.addEventListener('touchstart', function (e) {
+        this.canvas.addEventListener('touchstart', (e) => {
             let targetX = e.touches[0].clientX;
             let targetY = e.touches[0].clientY - (screenY - this.height);
 
-            for (let i of that.buttons) {
+            for (let i of this.buttons) {
+                i.untouch();
                 if (i.isTouched(targetX, targetY)) {
-                    i.touch(that.ctx);
-                    break;
+                    i.touch(this.ctx);
                 }
             }
+            this.draw();
+        });
+        this.canvas.addEventListener('touchmove', (e) => {
+            console.log(e);
         });
     };
 
@@ -126,23 +130,29 @@ export default class Canvas {
                     width: this.alphaWidth,
                     height: this.alphaHeight,
                     borderRadius: 5,
-                    background: '#fff',
                     value: this.alphas[j][i],
                     size: '16px',
                     family: 'Microsoft yahei',
                     weight: 'bold',
-                    color: '#000'
+                    untouchBackground: '#fff',
+                    untouchColor: '#000',
+                    touchBackgroundColor: '#000',
+                    touchColor: '#fff'
                 }, this.ctx);
                 this.buttons.push(button);
-                button.draw();
             }
         }
     };
 
     draw () {
+        this.clear();
         this.ctx.fillStyle = '#d7d8dc';
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
         this.ctx.fill();
+
+        for (let i of this.buttons) {
+            i.draw();
+        }
     };
 
     /**

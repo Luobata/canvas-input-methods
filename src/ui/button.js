@@ -24,12 +24,17 @@ export default class Button {
         this.height = conf.height;
         this.borderRadius = conf.borderRadius;
         this.background = conf.background;
+        this.touchBackground = conf.touchBackground;
+        this.untouchBackground = conf.untouchBackground;
 
         this.value = conf.value;
-        this.color = conf.color;
+        this.touchColor = conf.touchColor;
+        this.untouchColor = conf.untouchColor;
         this.size = conf.size;
         this.family = conf.family;
         this.weight = conf.weight;
+
+        this.untouch();
     };
 
     draw () {
@@ -57,7 +62,14 @@ export default class Button {
 
     touch () {
         console.log(this.value);
+        this.color = this.touchColor;
+        this.background = this.touchBackground;
     };
+
+    untouch () {
+        this.color = this.untouchColor;
+        this.background = this.untouchBackground;
+    }
 
     /**
      * 判断是否被点击事件

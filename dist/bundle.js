@@ -68,12 +68,17 @@ var Button = function () {
         this.height = conf.height;
         this.borderRadius = conf.borderRadius;
         this.background = conf.background;
+        this.touchBackground = conf.touchBackground;
+        this.untouchBackground = conf.untouchBackground;
 
         this.value = conf.value;
-        this.color = conf.color;
+        this.touchColor = conf.touchColor;
+        this.untouchColor = conf.untouchColor;
         this.size = conf.size;
         this.family = conf.family;
         this.weight = conf.weight;
+
+        this.untouch();
     }
 
     createClass(Button, [{
@@ -104,14 +109,22 @@ var Button = function () {
         key: 'touch',
         value: function touch() {
             console.log(this.value);
+            this.color = this.touchColor;
+            this.background = this.touchBackground;
         }
     }, {
-        key: 'isTouched',
-
+        key: 'untouch',
+        value: function untouch() {
+            this.color = this.untouchColor;
+            this.background = this.untouchBackground;
+        }
 
         /**
          * 判断是否被点击事件
          */
+
+    }, {
+        key: 'isTouched',
         value: function isTouched(x, y) {
             return x >= this.x && x <= this.x + this.width && y >= this.y && y <= this.y + this.height;
         }
@@ -145,9 +158,10 @@ var Canvas = function () {
         this.styleInit();
         this.sizeInit();
 
-        this.draw();
         this.buttonInit();
         this.eventInit();
+
+        this.draw();
     }
 
     createClass(Canvas, [{
@@ -226,23 +240,24 @@ var Canvas = function () {
          * 给canvas绑定事件
          */
         value: function eventInit() {
+            var _this = this;
+
             var screenY = window.screen.height;
-            var that = this;
             this.canvas.addEventListener('touchstart', function (e) {
                 var targetX = e.touches[0].clientX;
-                var targetY = e.touches[0].clientY - (screenY - this.height);
+                var targetY = e.touches[0].clientY - (screenY - _this.height);
 
                 var _iteratorNormalCompletion = true;
                 var _didIteratorError = false;
                 var _iteratorError = undefined;
 
                 try {
-                    for (var _iterator = that.buttons[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                    for (var _iterator = _this.buttons[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
                         var i = _step.value;
 
+                        i.untouch();
                         if (i.isTouched(targetX, targetY)) {
-                            i.touch(that.ctx);
-                            break;
+                            i.touch(_this.ctx);
                         }
                     }
                 } catch (err) {
@@ -259,6 +274,11 @@ var Canvas = function () {
                         }
                     }
                 }
+
+                _this.draw();
+            });
+            this.canvas.addEventListener('touchmove', function (e) {
+                console.log(e);
             });
         }
     }, {
@@ -281,24 +301,51 @@ var Canvas = function () {
                         width: this.alphaWidth,
                         height: this.alphaHeight,
                         borderRadius: 5,
-                        background: '#fff',
                         value: this.alphas[j][i],
                         size: '16px',
                         family: 'Microsoft yahei',
                         weight: 'bold',
-                        color: '#000'
+                        untouchBackground: '#fff',
+                        untouchColor: '#000',
+                        touchBackgroundColor: '#000',
+                        touchColor: '#fff'
                     }, this.ctx);
                     this.buttons.push(button);
-                    button.draw();
                 }
             }
         }
     }, {
         key: 'draw',
         value: function draw() {
+            this.clear();
             this.ctx.fillStyle = '#d7d8dc';
             this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
             this.ctx.fill();
+
+            var _iteratorNormalCompletion2 = true;
+            var _didIteratorError2 = false;
+            var _iteratorError2 = undefined;
+
+            try {
+                for (var _iterator2 = this.buttons[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+                    var i = _step2.value;
+
+                    i.draw();
+                }
+            } catch (err) {
+                _didIteratorError2 = true;
+                _iteratorError2 = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion2 && _iterator2.return) {
+                        _iterator2.return();
+                    }
+                } finally {
+                    if (_didIteratorError2) {
+                        throw _iteratorError2;
+                    }
+                }
+            }
         }
     }, {
         key: 'clear',
