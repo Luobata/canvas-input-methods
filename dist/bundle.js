@@ -53,6 +53,70 @@ var createClass = function () {
   };
 }();
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+var slicedToArray = function () {
+  function sliceIterator(arr, i) {
+    var _arr = [];
+    var _n = true;
+    var _d = false;
+    var _e = undefined;
+
+    try {
+      for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
+        _arr.push(_s.value);
+
+        if (i && _arr.length === i) break;
+      }
+    } catch (err) {
+      _d = true;
+      _e = err;
+    } finally {
+      try {
+        if (!_n && _i["return"]) _i["return"]();
+      } finally {
+        if (_d) throw _e;
+      }
+    }
+
+    return _arr;
+  }
+
+  return function (arr, i) {
+    if (Array.isArray(arr)) {
+      return arr;
+    } else if (Symbol.iterator in Object(arr)) {
+      return sliceIterator(arr, i);
+    } else {
+      throw new TypeError("Invalid attempt to destructure non-iterable instance");
+    }
+  };
+}();
+
 var Button = function () {
 
     // txt
@@ -67,7 +131,6 @@ var Button = function () {
         this.width = conf.width;
         this.height = conf.height;
         this.borderRadius = conf.borderRadius;
-        this.background = conf.background;
         this.touchBackground = conf.touchBackground;
         this.untouchBackground = conf.untouchBackground;
 
@@ -148,7 +211,7 @@ var Alpha = function () {
         classCallCheck(this, Alpha);
 
         this.rate = rate;
-        this.alpha = alpha;
+        this.prop = alpha;
 
         this.init();
     }
@@ -164,61 +227,62 @@ var Alpha = function () {
     }, {
         key: 'lowInit',
         value: function lowInit() {
-            this.low = [];
+            this.low = new Map();
 
-            this.low.push(this.generateArr(['q', 'w', 'e', 'r', 'y', 't', 'u', 'i', 'o', 'p']));
+            this.low.set(1, this.generateArr(['q', 'w', 'e', 'r', 'y', 't', 'u', 'i', 'o', 'p']));
 
-            this.low.push(this.generateArr(['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l']));
+            this.low.set(2, this.generateArr(['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l']));
 
-            this.low.push(this.generateArr(['z', 'x', 'c', 'v', 'b', 'n', 'm']));
+            this.low.set(3, this.generateArr(['z', 'x', 'c', 'v', 'b', 'n', 'm']));
         }
     }, {
         key: 'upInit',
         value: function upInit() {
-            this.up = [];
+            this.up = new Map();
 
-            this.up.push(this.generateArr(['Q', 'W', 'E', 'R', 'Y', 'T', 'U', 'I', 'O', 'P']));
+            this.up.set(1, this.generateArr(['Q', 'W', 'E', 'R', 'Y', 'T', 'U', 'I', 'O', 'P']));
 
-            this.up.push(this.generateArr(['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L']));
+            this.up.set(2, this.generateArr(['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L']));
 
-            this.up.push(this.generateArr(['Z', 'X', 'C', 'V', 'B', 'N', 'M']));
+            this.up.set(3, this.generateArr(['Z', 'X', 'C', 'V', 'B', 'N', 'M']));
         }
     }, {
         key: 'numberInit',
         value: function numberInit() {
-            this.number = [];
+            this.number = new Map();
 
-            this.number.push(this.generateArr(['1', '2', '3', '4', '5', '6', '7', '8', '9', '0']));
+            this.number.set(1, this.generateArr(['1', '2', '3', '4', '5', '6', '7', '8', '9', '0']));
 
-            this.number.push(this.generateArr(['-', '/', ':', ';', '(', ')', '$', '&', '@', '"']));
+            this.number.set(2, this.generateArr(['-', '/', ':', ';', '(', ')', '$', '&', '@', '"']));
 
-            this.number.push(this.generateArr(['.', ',', '?', '!', "'"]));
+            this.number.set(3, this.generateArr(['.', ',', '?', '!', "'"]));
         }
     }, {
         key: 'symbolInit',
         value: function symbolInit() {
-            this.symbol = [];
+            this.symbol = new Map();
 
-            this.symbol.push(this.generateArr(['[', ']', '{', '}', '#', '%', '^', '*', '+', '=']));
+            this.symbol.set(1, this.generateArr(['[', ']', '{', '}', '#', '%', '^', '*', '+', '=']));
 
-            this.symbol.push(this.generateArr(['_', '\\', '|', '~', '<', '>', '€', '£', '¥', '•']));
+            this.symbol.set(2, this.generateArr(['_', '\\', '|', '~', '<', '>', '€', '£', '¥', '•']));
 
-            this.symbol.push(this.generateArr(['.', ',', '?', '!', "'"]));
+            this.symbol.set(3, this.generateArr(['.', ',', '?', '!', "'"]));
         }
     }, {
         key: 'generate',
         value: function generate(value) {
             return {
                 value: value,
-                width: this.alpha.width,
-                height: this.alpha.height,
-                size: this.alpha.size,
-                family: this.alpha.family,
-                weight: this.alpha.weight,
-                untouchColor: this.alpha.untouchColor,
-                untouchBackground: this.alpha.untouchBackground,
-                touchColor: this.alpha.touchColor,
-                touchBackground: this.alpha.touchBackground
+                width: this.prop.width,
+                height: this.prop.height,
+                borderRadius: this.prop.borderRadius,
+                size: this.prop.size,
+                family: this.prop.family,
+                weight: this.prop.weight,
+                untouchColor: this.prop.untouchColor,
+                untouchBackground: this.prop.untouchBackground,
+                touchColor: this.prop.touchColor,
+                touchBackground: this.prop.touchBackground
             };
         }
     }, {
@@ -245,7 +309,6 @@ var Canvas = function () {
     // 字母高度
     // 字母初始位置X
     // 字母初始位置Y
-    // 字母数组
 
     // button 数组
     // 选中的元素
@@ -285,26 +348,13 @@ var Canvas = function () {
                 untouchBackground: '#fff',
                 untouchColor: '#000',
                 touchBackground: '#000',
-                touchColor: '#fff'
+                touchColor: '#fff',
+                paddingWidth: 4 * this.rate,
+                paddingHeight: 8 * this.rate,
+                startY: 10
             }, this.rate);
+            this.alpha.startX = (this.width - this.alpha.low.get(1).length * this.alphaWidth - (this.alpha.low.get(1).length - 1) * this.alpha.paddingWidth) / 2;
             console.log(this.alpha);
-            this.alphas = [];
-
-            // 第一行
-            this.alphas.push(['q', 'w', 'e', 'r', 'y', 't', 'u', 'i', 'o', 'p']);
-
-            // 第二行
-            this.alphas.push(['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l']);
-
-            // 第三行
-            this.alphas.push(['z', 'x', 'c', 'v', 'b', 'n', 'm']);
-
-            this.alphaPaddingWidth = 4 * this.rate;
-            this.alphaPaddingHeight = 8 * this.rate;
-            this.alphaWidth = 27.5 * this.rate;
-            this.alphaHeight = 36 * this.rate;
-            this.alphaStartX = (this.width - this.alpha.low[0].length * this.alphaWidth - (this.alpha.low[0].length - 1) * this.alphaPaddingWidth) / 2;
-            this.alphaStartY = 10;
         }
     }, {
         key: 'windowInit',
@@ -441,26 +491,38 @@ var Canvas = function () {
         value: function buttonInit() {
             this.buttons = [];
 
-            for (var j = 0; j < this.alphas.length; j++) {
-                for (var i = 0; i < this.alphas[j].length; i++) {
-                    var item = this.alphas[i];
-                    var alphaStartX = (this.width - this.alphas[j].length * this.alphaWidth - (this.alphas[j].length - 1) * this.alphaPaddingWidth) / 2;
-                    var button = new Button({
-                        x: alphaStartX + i * (this.alphaPaddingWidth + this.alphaWidth),
-                        y: this.alphaStartY + j * (this.alphaPaddingHeight + this.alphaHeight),
-                        width: this.alphaWidth,
-                        height: this.alphaHeight,
-                        borderRadius: 5,
-                        value: this.alphas[j][i],
-                        size: '16px',
-                        family: 'Microsoft yahei',
-                        weight: 'bold',
-                        untouchBackground: '#fff',
-                        untouchColor: '#000',
-                        touchBackgroundColor: '#000',
-                        touchColor: '#fff'
-                    }, this.ctx);
-                    this.buttons.push(button);
+            var _iteratorNormalCompletion3 = true;
+            var _didIteratorError3 = false;
+            var _iteratorError3 = undefined;
+
+            try {
+                for (var _iterator3 = this.alpha.low[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+                    var _step3$value = slicedToArray(_step3.value, 2),
+                        key = _step3$value[0],
+                        value = _step3$value[1];
+
+                    for (var i = 0; i < value.length; i++) {
+                        var item = value[i];
+                        var alphaStartX = (this.width - value.length * this.alpha.prop.width - (value.length - 1) * this.alpha.prop.paddingWidth) / 2;
+                        var button = new Button(Object.assign({
+                            x: alphaStartX + i * (this.alpha.prop.paddingWidth + this.alpha.prop.width),
+                            y: this.alpha.prop.startY + (key - 1) * (this.alpha.prop.paddingHeight + this.alpha.prop.height)
+                        }, item), this.ctx);
+                        this.buttons.push(button);
+                    }
+                }
+            } catch (err) {
+                _didIteratorError3 = true;
+                _iteratorError3 = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion3 && _iterator3.return) {
+                        _iterator3.return();
+                    }
+                } finally {
+                    if (_didIteratorError3) {
+                        throw _iteratorError3;
+                    }
                 }
             }
         }
@@ -483,27 +545,27 @@ var Canvas = function () {
             this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
             this.ctx.fill();
 
-            var _iteratorNormalCompletion3 = true;
-            var _didIteratorError3 = false;
-            var _iteratorError3 = undefined;
+            var _iteratorNormalCompletion4 = true;
+            var _didIteratorError4 = false;
+            var _iteratorError4 = undefined;
 
             try {
-                for (var _iterator3 = this.buttons[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-                    var i = _step3.value;
+                for (var _iterator4 = this.buttons[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+                    var i = _step4.value;
 
                     i.draw();
                 }
             } catch (err) {
-                _didIteratorError3 = true;
-                _iteratorError3 = err;
+                _didIteratorError4 = true;
+                _iteratorError4 = err;
             } finally {
                 try {
-                    if (!_iteratorNormalCompletion3 && _iterator3.return) {
-                        _iterator3.return();
+                    if (!_iteratorNormalCompletion4 && _iterator4.return) {
+                        _iterator4.return();
                     }
                 } finally {
-                    if (_didIteratorError3) {
-                        throw _iteratorError3;
+                    if (_didIteratorError4) {
+                        throw _iteratorError4;
                     }
                 }
             }

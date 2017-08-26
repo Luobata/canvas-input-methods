@@ -12,7 +12,6 @@ export default class Canvas {
     alphaHeight: number; // 字母高度
     alphaStartX: number; // 字母初始位置X
     alphaStartY: number; // 字母初始位置Y
-    alphas: Array; // 字母数组
 
     buttons: Array<Button>; // button 数组
     touching: Button; // 选中的元素
@@ -46,32 +45,13 @@ export default class Canvas {
             untouchBackground: '#fff',
             untouchColor: '#000',
             touchBackground: '#000',
-            touchColor: '#fff'
+            touchColor: '#fff',
+            paddingWidth: 4 * this.rate,
+            paddingHeight: 8 * this.rate,
+            startY: 10
         }, this.rate);
+        this.alpha.startX = (this.width - this.alpha.low.get(1).length * this.alphaWidth - (this.alpha.low.get(1).length - 1) * this.alpha.paddingWidth) / 2;
         console.log(this.alpha);
-        this.alphas = [];
-
-        // 第一行
-        this.alphas.push([
-            'q', 'w', 'e', 'r', 'y', 't', 'u', 'i', 'o', 'p' 
-        ]);
-
-        // 第二行
-        this.alphas.push([
-            'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l'
-        ]);
-
-        // 第三行
-        this.alphas.push([
-            'z', 'x', 'c', 'v', 'b', 'n', 'm'
-        ]);
-
-        this.alphaPaddingWidth = 4 * this.rate;
-        this.alphaPaddingHeight = 8 * this.rate;
-        this.alphaWidth = 27.5 * this.rate;
-        this.alphaHeight = 36 * this.rate;
-        this.alphaStartX = (this.width - this.alpha.low[0].length * this.alphaWidth - (this.alpha.low[0].length - 1) * this.alphaPaddingWidth) / 2;
-        this.alphaStartY = 10;
     };
 
     /**
@@ -147,25 +127,17 @@ export default class Canvas {
     buttonInit () {
         this.buttons = [];
 
-        for (let j = 0; j < this.alphas.length; j++) {
-            for (let i = 0; i < this.alphas[j].length; i++) {
-                let item = this.alphas[i];
-                let alphaStartX = (this.width - this.alphas[j].length * this.alphaWidth - (this.alphas[j].length - 1) * this.alphaPaddingWidth) / 2;
-                let button = new Button({
-                    x: alphaStartX + i * (this.alphaPaddingWidth + this.alphaWidth),
-                    y: this.alphaStartY + j * (this.alphaPaddingHeight + this.alphaHeight),
-                    width: this.alphaWidth,
-                    height: this.alphaHeight,
-                    borderRadius: 5,
-                    value: this.alphas[j][i],
-                    size: '16px',
-                    family: 'Microsoft yahei',
-                    weight: 'bold',
-                    untouchBackground: '#fff',
-                    untouchColor: '#000',
-                    touchBackgroundColor: '#000',
-                    touchColor: '#fff'
-                }, this.ctx);
+        for (const [key, value] of this.alpha.low) {
+            for (let i = 0; i < value.length; i++) {
+                let item = value[i];
+                let alphaStartX = (this.width - value.length * this.alpha.prop.width - (value.length - 1) * this.alpha.prop.paddingWidth) / 2;
+                let button = new Button(
+                        Object.assign({
+                            x: alphaStartX + i * (this.alpha.prop.paddingWidth + this.alpha.prop.width),
+                            y: this.alpha.prop.startY + (key - 1) * (this.alpha.prop.paddingHeight + this.alpha.prop.height),
+                        }, item),
+                        this.ctx
+                        );
                 this.buttons.push(button);
             }
         }

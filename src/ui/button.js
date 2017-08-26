@@ -23,7 +23,6 @@ export default class Button {
         this.width = conf.width;
         this.height = conf.height;
         this.borderRadius = conf.borderRadius;
-        this.background = conf.background;
         this.touchBackground = conf.touchBackground;
         this.untouchBackground = conf.untouchBackground;
 
