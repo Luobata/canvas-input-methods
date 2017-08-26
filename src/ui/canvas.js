@@ -6,12 +6,6 @@ export default class Canvas {
     rate: number; // 屏幕对于320的倍率
     width: number; // 屏幕宽度
     height: number; // 屏幕高度
-    alphaPaddingWidth: number; // 字母区的左右间隔
-    alphaPaddingHeight: number; // 字母区的上下间隔
-    alphaWidth: number; // 字母宽度
-    alphaHeight: number; // 字母高度
-    alphaStartX: number; // 字母初始位置X
-    alphaStartY: number; // 字母初始位置Y
 
     buttons: Array<Button>; // button 数组
     touching: Button; // 选中的元素
@@ -50,7 +44,7 @@ export default class Canvas {
             paddingHeight: 8 * this.rate,
             startY: 10
         }, this.rate);
-        this.alpha.startX = (this.width - this.alpha.low.get(1).length * this.alphaWidth - (this.alpha.low.get(1).length - 1) * this.alpha.paddingWidth) / 2;
+        this.alpha.startX = (this.width - this.alpha.low.get(1).length * this.alpha.prop.width - (this.alpha.low.get(1).length - 1) * this.alpha.prop.paddingWidth) / 2;
         console.log(this.alpha);
     };
 

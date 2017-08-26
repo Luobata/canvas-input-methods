@@ -1,5 +1,5 @@
 /**
- * @description 字母区域相关内容
+ * @description class canvas 与 class button 中间层
  */
 
 export default class Alpha {
@@ -10,6 +10,22 @@ export default class Alpha {
     symbol: Map; // 符号面板
     rate: number; // 比例
 
+    /**
+     * @param {number} prop.width               alpha宽度
+     * @param {number} prop.height              alpha高度
+     * @param {number} prop.borderRadius        alpha圆角
+     * @param {string} prop.size                字体大小(带px)
+     * @param {string} prop.family              字体类型
+     * @param {string} prop.weight              字体粗细
+     * @param {string} prop.untouchBackground   非选中态背景色
+     * @param {string} prop.untouchColor        非选中态字体颜色
+     * @param {string} prop.touchBackground     选中态背景色
+     * @param {string} prop.touchColor          选中态字体颜色
+     * @param {number} prop.paddingWidth        每个button的左右距离
+     * @param {number} prop.paddingHeight       每个button的上下距离
+     * @param {number} prop.startX              canvas布局的左上角位置x
+     * @param {number} prop.startY              canvas布局的左上角位置y
+     */
     prop: object;
 
     constructor (alpha, rate) {

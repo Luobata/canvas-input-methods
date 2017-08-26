@@ -195,7 +195,7 @@ var Button = function () {
 }();
 
 /**
- * @description 字母区域相关内容
+ * @description class canvas 与 class button 中间层
  */
 
 var Alpha = function () {
@@ -206,6 +206,22 @@ var Alpha = function () {
     // 符号面板
     // 比例
 
+    /**
+     * @param {number} prop.width               alpha宽度
+     * @param {number} prop.height              alpha高度
+     * @param {number} prop.borderRadius        alpha圆角
+     * @param {string} prop.size                字体大小(带px)
+     * @param {string} prop.family              字体类型
+     * @param {string} prop.weight              字体粗细
+     * @param {string} prop.untouchBackground   非选中态背景色
+     * @param {string} prop.untouchColor        非选中态字体颜色
+     * @param {string} prop.touchBackground     选中态背景色
+     * @param {string} prop.touchColor          选中态字体颜色
+     * @param {number} prop.paddingWidth        每个button的左右距离
+     * @param {number} prop.paddingHeight       每个button的上下距离
+     * @param {number} prop.startX              canvas布局的左上角位置x
+     * @param {number} prop.startY              canvas布局的左上角位置y
+     */
 
     function Alpha(alpha, rate) {
         classCallCheck(this, Alpha);
@@ -303,12 +319,6 @@ var Canvas = function () {
     // 屏幕对于320的倍率
     // 屏幕宽度
     // 屏幕高度
-    // 字母区的左右间隔
-    // 字母区的上下间隔
-    // 字母宽度
-    // 字母高度
-    // 字母初始位置X
-    // 字母初始位置Y
 
     // button 数组
     // 选中的元素
@@ -353,7 +363,7 @@ var Canvas = function () {
                 paddingHeight: 8 * this.rate,
                 startY: 10
             }, this.rate);
-            this.alpha.startX = (this.width - this.alpha.low.get(1).length * this.alphaWidth - (this.alpha.low.get(1).length - 1) * this.alpha.paddingWidth) / 2;
+            this.alpha.startX = (this.width - this.alpha.low.get(1).length * this.alpha.prop.width - (this.alpha.low.get(1).length - 1) * this.alpha.prop.paddingWidth) / 2;
             console.log(this.alpha);
         }
     }, {
