@@ -58,9 +58,10 @@ var Button = function () {
     // txt
 
 
-    function Button(conf) {
+    function Button(conf, ctx) {
         classCallCheck(this, Button);
 
+        this.ctx = ctx;
         this.x = conf.x;
         this.y = conf.y;
         this.width = conf.width;
@@ -77,34 +78,52 @@ var Button = function () {
 
     createClass(Button, [{
         key: 'draw',
-        value: function draw(ctx) {
-            ctx.save();
-            ctx.fillStyle = this.background;
-            ctx.lineCap = 'square';
+        value: function draw() {
+            this.ctx.save();
+            this.ctx.fillStyle = this.background;
+            this.ctx.lineCap = 'square';
 
-            ctx.beginPath();
+            this.ctx.beginPath();
 
             // 绘制圆角矩形
-            drawRoundRect(ctx, this.x, this.y, this.width, this.height, this.borderRadius);
+            drawRoundRect(this.ctx, this.x, this.y, this.width, this.height, this.borderRadius);
             // 绘制阴影
-            drawShadow(ctx, 3, 1, 1, '#000');
-            ctx.closePath();
-            ctx.fill();
+            drawShadow(this.ctx, 3, 1, 1, '#000');
+            this.ctx.closePath();
+            this.ctx.fill();
             // 绘制文字
 
-            ctx.restore();
-            ctx.fillStyle = this.color;
-            ctx.font = this.size + ' ' + this.family;
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.fillText(this.value, this.x + this.width / 2, this.y + this.height / 2);
+            this.ctx.restore();
+            this.ctx.fillStyle = this.color;
+            this.ctx.font = this.size + ' ' + this.family;
+            this.ctx.textAlign = 'center';
+            this.ctx.textBaseline = 'middle';
+            this.ctx.fillText(this.value, this.x + this.width / 2, this.y + this.height / 2);
+        }
+    }, {
+        key: 'touch',
+        value: function touch() {
+            console.log(this.value);
+        }
+    }, {
+        key: 'isTouched',
+
+
+        /**
+         * 判断是否被点击事件
+         */
+        value: function isTouched(x, y) {
+            return x >= this.x && x <= this.x + this.width && y >= this.y && y <= this.y + this.height;
         }
     }]);
     return Button;
 }();
 
 var Canvas = function () {
+
     // 屏幕对于320的倍率
+    // 屏幕宽度
+    // 屏幕高度
     // 字母区的左右间隔
     // 字母区的上下间隔
     // 字母宽度
@@ -112,6 +131,8 @@ var Canvas = function () {
     // 字母初始位置X
     // 字母初始位置Y
     // 字母数组
+
+    // button 数组
 
     function Canvas(canvas, ctx) {
         classCallCheck(this, Canvas);
@@ -126,21 +147,41 @@ var Canvas = function () {
 
         this.draw();
         this.buttonInit();
+        this.eventInit();
     }
 
     createClass(Canvas, [{
         key: 'alphaInit',
+
+
+        /**
+         * 初始化字母区
+         */
         value: function alphaInit() {
             this.alphas = [];
 
+            // 第一行
             this.alphas.push(['q', 'w', 'e', 'r', 'y', 't', 'u', 'i', 'o', 'p']);
+
+            // 第二行
+            this.alphas.push(['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l']);
+
+            // 第三行
+            this.alphas.push(['z', 'x', 'c', 'v', 'b', 'n', 'm']);
         }
     }, {
         key: 'windowInit',
+
+
+        /**
+         * 初始化布局相关参数
+         */
         value: function windowInit() {
             var width = document.body.clientWidth;
             var rate = parseInt(width * 12 / 320, 10);
             this.rate = rate / 12;
+            this.width = width;
+            this.height = width * 0.8;
             this.alphaPaddingWidth = 4 * this.rate;
             this.alphaPaddingHeight = 8 * this.rate;
             this.alphaWidth = 27.5 * this.rate;
@@ -151,6 +192,11 @@ var Canvas = function () {
         }
     }, {
         key: 'styleInit',
+
+
+        /*
+         * 调整canvas初始样式
+         */
         value: function styleInit() {
             this.canvas.style.position = 'fixed';
             this.canvas.style.bottom = '0';
@@ -159,13 +205,61 @@ var Canvas = function () {
         }
     }, {
         key: 'sizeInit',
+
+
+        /**
+         * 调整画布大小
+         */
         value: function sizeInit() {
             // canvas 的宽高用dom api设置 会有盒模型的问题 考虑border
-            var width = document.body.offsetWidth;
-            var height = width * 0.8;
+            var width = this.width;
+            var height = this.height;
 
             this.canvas.width = width;
             this.canvas.height = height;
+        }
+    }, {
+        key: 'eventInit',
+
+
+        /**
+         * 给canvas绑定事件
+         */
+        value: function eventInit() {
+            var screenY = window.screen.height;
+            var that = this;
+            this.canvas.addEventListener('touchstart', function (e) {
+                var targetX = e.touches[0].clientX;
+                var targetY = e.touches[0].clientY - (screenY - this.height);
+
+                var _iteratorNormalCompletion = true;
+                var _didIteratorError = false;
+                var _iteratorError = undefined;
+
+                try {
+                    for (var _iterator = that.buttons[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                        var i = _step.value;
+
+                        if (i.isTouched(targetX, targetY)) {
+                            i.touch(that.ctx);
+                            break;
+                        }
+                    }
+                } catch (err) {
+                    _didIteratorError = true;
+                    _iteratorError = err;
+                } finally {
+                    try {
+                        if (!_iteratorNormalCompletion && _iterator.return) {
+                            _iterator.return();
+                        }
+                    } finally {
+                        if (_didIteratorError) {
+                            throw _iteratorError;
+                        }
+                    }
+                }
+            });
         }
     }, {
         key: 'buttonInit',
@@ -175,22 +269,28 @@ var Canvas = function () {
          * 初始化面板上按钮
          */
         value: function buttonInit() {
-            for (var i = 0; i < this.alphas[0].length; i++) {
-                var item = this.alphas[i];
-                var button = new Button({
-                    x: this.alphaStartX + i * (this.alphaPaddingWidth + this.alphaWidth),
-                    y: 10,
-                    width: this.alphaWidth,
-                    height: this.alphaHeight,
-                    borderRadius: 5,
-                    background: '#fff',
-                    value: this.alphas[0][i],
-                    size: '16px',
-                    family: 'Microsoft yahei',
-                    weight: 'bold',
-                    color: '#000'
-                });
-                button.draw(this.ctx);
+            this.buttons = [];
+
+            for (var j = 0; j < this.alphas.length; j++) {
+                for (var i = 0; i < this.alphas[j].length; i++) {
+                    var item = this.alphas[i];
+                    var alphaStartX = (this.width - this.alphas[j].length * this.alphaWidth - (this.alphas[j].length - 1) * this.alphaPaddingWidth) / 2;
+                    var button = new Button({
+                        x: alphaStartX + i * (this.alphaPaddingWidth + this.alphaWidth),
+                        y: this.alphaStartY + j * (this.alphaPaddingHeight + this.alphaHeight),
+                        width: this.alphaWidth,
+                        height: this.alphaHeight,
+                        borderRadius: 5,
+                        background: '#fff',
+                        value: this.alphas[j][i],
+                        size: '16px',
+                        family: 'Microsoft yahei',
+                        weight: 'bold',
+                        color: '#000'
+                    }, this.ctx);
+                    this.buttons.push(button);
+                    button.draw();
+                }
             }
         }
     }, {
@@ -199,6 +299,16 @@ var Canvas = function () {
             this.ctx.fillStyle = '#d7d8dc';
             this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
             this.ctx.fill();
+        }
+    }, {
+        key: 'clear',
+
+
+        /**
+         * 清空画布
+         */
+        value: function clear() {
+            this.canvas.height = this.canvas.height;
         }
     }]);
     return Canvas;

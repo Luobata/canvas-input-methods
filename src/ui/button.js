@@ -1,6 +1,7 @@
 import { drawRoundRect, drawShadow } from 'UI/util';
 
 export default class Button {
+
     x: number;
     y: number;
     width: number;
@@ -15,7 +16,8 @@ export default class Button {
     family: string;
     weight: number;
 
-    constructor (conf) {
+    constructor (conf, ctx) {
+        this.ctx = ctx;
         this.x = conf.x;
         this.y = conf.y;
         this.width = conf.width;
@@ -30,26 +32,40 @@ export default class Button {
         this.weight = conf.weight;
     };
 
-    draw (ctx) {
-        ctx.save();
-        ctx.fillStyle = this.background;
-        ctx.lineCap = 'square';
+    draw () {
+        this.ctx.save();
+        this.ctx.fillStyle = this.background;
+        this.ctx.lineCap = 'square';
 
-        ctx.beginPath();
+        this.ctx.beginPath();
 
         // 绘制圆角矩形
-        drawRoundRect(ctx, this.x, this.y, this.width, this.height, this.borderRadius);
+        drawRoundRect(this.ctx, this.x, this.y, this.width, this.height, this.borderRadius);
         // 绘制阴影
-        drawShadow(ctx, 3, 1, 1, '#000');
-        ctx.closePath();
-        ctx.fill();
+        drawShadow(this.ctx, 3, 1, 1, '#000');
+        this.ctx.closePath();
+        this.ctx.fill();
         // 绘制文字
 
-        ctx.restore();
-        ctx.fillStyle = this.color;
-        ctx.font =  `${this.size} ${this.family}`;
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(this.value, this.x + this.width / 2, this.y + this.height / 2);
+        this.ctx.restore();
+        this.ctx.fillStyle = this.color;
+        this.ctx.font =  `${this.size} ${this.family}`;
+        this.ctx.textAlign = 'center';
+        this.ctx.textBaseline = 'middle';
+        this.ctx.fillText(this.value, this.x + this.width / 2, this.y + this.height / 2);
     };
+
+    touch () {
+        console.log(this.value);
+    };
+
+    /**
+     * 判断是否被点击事件
+     */
+    isTouched (x, y) {
+        return x >= this.x &&
+            x <= this.x + this.width &&
+            y >= this.y &&
+            y <= this.y + this.height;
+    }
 };
