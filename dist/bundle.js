@@ -131,6 +131,109 @@ var Button = function () {
     return Button;
 }();
 
+/**
+ * @description 字母区域相关内容
+ */
+
+var Alpha = function () {
+
+    // 小写字母面板
+    // 大写字母面板
+    // 数字面板
+    // 符号面板
+    // 比例
+
+
+    function Alpha(alpha, rate) {
+        classCallCheck(this, Alpha);
+
+        this.rate = rate;
+        this.alpha = alpha;
+
+        this.init();
+    }
+
+    createClass(Alpha, [{
+        key: 'init',
+        value: function init() {
+            this.lowInit();
+            this.upInit();
+            this.numberInit();
+            this.symbolInit();
+        }
+    }, {
+        key: 'lowInit',
+        value: function lowInit() {
+            this.low = [];
+
+            this.low.push(this.generateArr(['q', 'w', 'e', 'r', 'y', 't', 'u', 'i', 'o', 'p']));
+
+            this.low.push(this.generateArr(['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l']));
+
+            this.low.push(this.generateArr(['z', 'x', 'c', 'v', 'b', 'n', 'm']));
+        }
+    }, {
+        key: 'upInit',
+        value: function upInit() {
+            this.up = [];
+
+            this.up.push(this.generateArr(['Q', 'W', 'E', 'R', 'Y', 'T', 'U', 'I', 'O', 'P']));
+
+            this.up.push(this.generateArr(['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L']));
+
+            this.up.push(this.generateArr(['Z', 'X', 'C', 'V', 'B', 'N', 'M']));
+        }
+    }, {
+        key: 'numberInit',
+        value: function numberInit() {
+            this.number = [];
+
+            this.number.push(this.generateArr(['1', '2', '3', '4', '5', '6', '7', '8', '9', '0']));
+
+            this.number.push(this.generateArr(['-', '/', ':', ';', '(', ')', '$', '&', '@', '"']));
+
+            this.number.push(this.generateArr(['.', ',', '?', '!', "'"]));
+        }
+    }, {
+        key: 'symbolInit',
+        value: function symbolInit() {
+            this.symbol = [];
+
+            this.symbol.push(this.generateArr(['[', ']', '{', '}', '#', '%', '^', '*', '+', '=']));
+
+            this.symbol.push(this.generateArr(['_', '\\', '|', '~', '<', '>', '€', '£', '¥', '•']));
+
+            this.symbol.push(this.generateArr(['.', ',', '?', '!', "'"]));
+        }
+    }, {
+        key: 'generate',
+        value: function generate(value) {
+            return {
+                value: value,
+                width: this.alpha.width,
+                height: this.alpha.height,
+                size: this.alpha.size,
+                family: this.alpha.family,
+                weight: this.alpha.weight,
+                untouchColor: this.alpha.untouchColor,
+                untouchBackground: this.alpha.untouchBackground,
+                touchColor: this.alpha.touchColor,
+                touchBackground: this.alpha.touchBackground
+            };
+        }
+    }, {
+        key: 'generateArr',
+        value: function generateArr(arr) {
+            var _this = this;
+
+            return arr.map(function (v) {
+                return _this.generate(v);
+            });
+        }
+    }]);
+    return Alpha;
+}();
+
 var Canvas = function () {
 
     // 屏幕对于320的倍率
@@ -153,8 +256,8 @@ var Canvas = function () {
         this.canvas = canvas;
         this.ctx = ctx;
 
-        this.alphaInit();
         this.windowInit();
+        this.alphaInit();
         this.styleInit();
         this.sizeInit();
 
@@ -172,6 +275,19 @@ var Canvas = function () {
          * 初始化字母区
          */
         value: function alphaInit() {
+            this.alpha = new Alpha({
+                width: 27.5 * this.rate,
+                height: 36 * this.rate,
+                borderRadius: 5,
+                size: '16px',
+                family: 'Microsoft yahei',
+                weight: 'bold',
+                untouchBackground: '#fff',
+                untouchColor: '#000',
+                touchBackground: '#000',
+                touchColor: '#fff'
+            }, this.rate);
+            console.log(this.alpha);
             this.alphas = [];
 
             // 第一行
@@ -182,6 +298,13 @@ var Canvas = function () {
 
             // 第三行
             this.alphas.push(['z', 'x', 'c', 'v', 'b', 'n', 'm']);
+
+            this.alphaPaddingWidth = 4 * this.rate;
+            this.alphaPaddingHeight = 8 * this.rate;
+            this.alphaWidth = 27.5 * this.rate;
+            this.alphaHeight = 36 * this.rate;
+            this.alphaStartX = (this.width - this.alpha.low[0].length * this.alphaWidth - (this.alpha.low[0].length - 1) * this.alphaPaddingWidth) / 2;
+            this.alphaStartY = 10;
         }
     }, {
         key: 'windowInit',
@@ -196,13 +319,6 @@ var Canvas = function () {
             this.rate = rate / 12;
             this.width = width;
             this.height = width * 0.8;
-            this.alphaPaddingWidth = 4 * this.rate;
-            this.alphaPaddingHeight = 8 * this.rate;
-            this.alphaWidth = 27.5 * this.rate;
-            this.alphaHeight = 36 * this.rate;
-
-            this.alphaStartX = (width - this.alphas[0].length * this.alphaWidth - (this.alphas[0].length - 1) * this.alphaPaddingWidth) / 2;
-            this.alphaStartY = 10;
         }
     }, {
         key: 'styleInit',

@@ -1,4 +1,5 @@
 import Button from 'UI/button';
+import Alpha from 'UI/alpha';
 
 export default class Canvas {
 
@@ -20,8 +21,8 @@ export default class Canvas {
         this.canvas = canvas;
         this.ctx = ctx;
 
-        this.alphaInit();
         this.windowInit();
+        this.alphaInit();
         this.styleInit();
         this.sizeInit();
 
@@ -35,6 +36,19 @@ export default class Canvas {
      * 初始化字母区
      */
     alphaInit () {
+        this.alpha = new Alpha({
+            width: 27.5 * this.rate,
+            height: 36 * this.rate,
+            borderRadius: 5,
+            size: '16px',
+            family: 'Microsoft yahei',
+            weight: 'bold',
+            untouchBackground: '#fff',
+            untouchColor: '#000',
+            touchBackground: '#000',
+            touchColor: '#fff'
+        }, this.rate);
+        console.log(this.alpha);
         this.alphas = [];
 
         // 第一行
@@ -51,6 +65,13 @@ export default class Canvas {
         this.alphas.push([
             'z', 'x', 'c', 'v', 'b', 'n', 'm'
         ]);
+
+        this.alphaPaddingWidth = 4 * this.rate;
+        this.alphaPaddingHeight = 8 * this.rate;
+        this.alphaWidth = 27.5 * this.rate;
+        this.alphaHeight = 36 * this.rate;
+        this.alphaStartX = (this.width - this.alpha.low[0].length * this.alphaWidth - (this.alpha.low[0].length - 1) * this.alphaPaddingWidth) / 2;
+        this.alphaStartY = 10;
     };
 
     /**
@@ -62,13 +83,6 @@ export default class Canvas {
         this.rate = rate / 12;
         this.width = width;
         this.height = width * 0.8;
-        this.alphaPaddingWidth = 4 * this.rate;
-        this.alphaPaddingHeight = 8 * this.rate;
-        this.alphaWidth = 27.5 * this.rate;
-        this.alphaHeight = 36 * this.rate;
-
-        this.alphaStartX = (width - this.alphas[0].length * this.alphaWidth - (this.alphas[0].length - 1) * this.alphaPaddingWidth) / 2;
-        this.alphaStartY = 10;
     };
 
     /*
