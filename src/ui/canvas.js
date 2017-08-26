@@ -14,6 +14,7 @@ export default class Canvas {
     alphas: Array; // 字母数组
 
     buttons: Array<Button>; // button 数组
+    touching: Button; // 选中的元素
 
     constructor (canvas, ctx) {
         this.canvas = canvas;
@@ -97,20 +98,32 @@ export default class Canvas {
      */
     eventInit () {
         const screenY = window.screen.height;
-        this.canvas.addEventListener('touchstart', (e) => {
+        const moveIn = (e) => {
             let targetX = e.touches[0].clientX;
             let targetY = e.touches[0].clientY - (screenY - this.height);
 
             for (let i of this.buttons) {
-                i.untouch();
                 if (i.isTouched(targetX, targetY)) {
                     i.touch(this.ctx);
+                    this.touching = i;
+                } else {
+                    i.untouch();
                 }
             }
             this.draw();
+        };
+        this.canvas.addEventListener('touchstart', (e) => {
+            moveIn(e);
+        });
+        this.canvas.addEventListener('touchend', (e) => {
+            for (let i of this.buttons) {
+                i.untouch();
+            }
+            this.draw();
+            this.input();
         });
         this.canvas.addEventListener('touchmove', (e) => {
-            console.log(e);
+            moveIn(e);
         });
     };
 
@@ -142,6 +155,14 @@ export default class Canvas {
                 this.buttons.push(button);
             }
         }
+    };
+
+    /**
+     * 输出事件
+     */
+    input () {
+        console.log(this.touching.value);
+        this.touching = null;
     };
 
     draw () {

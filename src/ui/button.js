@@ -61,7 +61,6 @@ export default class Button {
     };
 
     touch () {
-        console.log(this.value);
         this.color = this.touchColor;
         this.background = this.touchBackground;
     };
