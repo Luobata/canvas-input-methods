@@ -200,6 +200,11 @@ var Button = function () {
 /**
  * @description class canvas 与 class button 中间层
  */
+// 定义私有方法symbol
+var generateArr = Symbol('generateArr');
+var generate = Symbol('generate');
+var generateButton = Symbol('generateButton');
+
 var Alpha = function () {
 
     // 小写字母面板
@@ -255,46 +260,52 @@ var Alpha = function () {
         value: function lowInit() {
             this.low = new Map();
 
-            this.low.set(1, this.generateArr(['q', 'w', 'e', 'r', 'y', 't', 'u', 'i', 'o', 'p']));
+            this.low.set(1, this[generateArr](['q', 'w', 'e', 'r', 'y', 't', 'u', 'i', 'o', 'p']));
 
-            this.low.set(2, this.generateArr(['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l']));
+            this.low.set(2, this[generateArr](['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l']));
 
-            this.low.set(3, this.generateArr(['z', 'x', 'c', 'v', 'b', 'n', 'm']));
+            this.low.set(3, this[generateArr](['z', 'x', 'c', 'v', 'b', 'n', 'm']));
 
-            this.low.set('buttons', this.generateButton('low'));
+            this.low.set('buttons', this[generateButton]('low'));
         }
     }, {
         key: 'upInit',
         value: function upInit() {
             this.up = new Map();
 
-            this.up.set(1, this.generateArr(['Q', 'W', 'E', 'R', 'Y', 'T', 'U', 'I', 'O', 'P']));
+            this.up.set(1, this[generateArr](['Q', 'W', 'E', 'R', 'Y', 'T', 'U', 'I', 'O', 'P']));
 
-            this.up.set(2, this.generateArr(['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L']));
+            this.up.set(2, this[generateArr](['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L']));
 
-            this.up.set(3, this.generateArr(['Z', 'X', 'C', 'V', 'B', 'N', 'M']));
+            this.up.set(3, this[generateArr](['Z', 'X', 'C', 'V', 'B', 'N', 'M']));
+
+            this.low.set('buttons', this[generateButton]('up'));
         }
     }, {
         key: 'numberInit',
         value: function numberInit() {
             this.number = new Map();
 
-            this.number.set(1, this.generateArr(['1', '2', '3', '4', '5', '6', '7', '8', '9', '0']));
+            this.number.set(1, this[generateArr](['1', '2', '3', '4', '5', '6', '7', '8', '9', '0']));
 
-            this.number.set(2, this.generateArr(['-', '/', ':', ';', '(', ')', '$', '&', '@', '"']));
+            this.number.set(2, this[generateArr](['-', '/', ':', ';', '(', ')', '$', '&', '@', '"']));
 
-            this.number.set(3, this.generateArr(['.', ',', '?', '!', "'"]));
+            this.number.set(3, this[generateArr](['.', ',', '?', '!', "'"]));
+
+            this.low.set('buttons', this[generateButton]('number'));
         }
     }, {
         key: 'symbolInit',
         value: function symbolInit() {
             this.symbol = new Map();
 
-            this.symbol.set(1, this.generateArr(['[', ']', '{', '}', '#', '%', '^', '*', '+', '=']));
+            this.symbol.set(1, this[generateArr](['[', ']', '{', '}', '#', '%', '^', '*', '+', '=']));
 
-            this.symbol.set(2, this.generateArr(['_', '\\', '|', '~', '<', '>', '€', '£', '¥', '•']));
+            this.symbol.set(2, this[generateArr](['_', '\\', '|', '~', '<', '>', '€', '£', '¥', '•']));
 
-            this.symbol.set(3, this.generateArr(['.', ',', '?', '!', "'"]));
+            this.symbol.set(3, this[generateArr](['.', ',', '?', '!', "'"]));
+
+            this.low.set('buttons', this[generateButton]('symbol'));
         }
     }, {
         key: 'functionInit',
@@ -307,7 +318,7 @@ var Alpha = function () {
             this.func = [];
 
             var gen = function gen(v, x, y, type) {
-                return new Button(Object.assign(_this.generate(v), {
+                return new Button(Object.assign(_this[generate](v), {
                     x: x,
                     y: y,
                     width: _this.prop.funcWidth,
@@ -320,10 +331,10 @@ var Alpha = function () {
             this.func.push(gen('←', this.prop.layoutWidth - this.prop.paddingWidth - this.prop.funcWidth, this.low.get(3)[0].y, 'delete'));
         }
     }, {
-        key: 'generate',
-        value: function generate(value) {
+        key: generate,
+        value: function value(_value) {
             return {
-                value: value,
+                value: _value,
                 width: this.prop.width,
                 height: this.prop.height,
                 borderRadius: this.prop.borderRadius,
@@ -337,17 +348,17 @@ var Alpha = function () {
             };
         }
     }, {
-        key: 'generateArr',
-        value: function generateArr(arr) {
+        key: generateArr,
+        value: function value(arr) {
             var _this2 = this;
 
             return arr.map(function (v) {
-                return _this2.generate(v);
+                return _this2[generate](v);
             });
         }
     }, {
-        key: 'generateButton',
-        value: function generateButton(name) {
+        key: generateButton,
+        value: function value(name) {
             var buttonArr = [];
 
             var _iteratorNormalCompletion = true;

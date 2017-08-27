@@ -3,6 +3,11 @@
  */
 import Button from 'UI/button';
 
+// 定义私有方法symbol
+const generateArr = Symbol('generateArr');
+const generate = Symbol('generate');
+const generateButton = Symbol('generateButton');
+
 export default class Alpha {
 
     low: Map; // 小写字母面板
@@ -54,67 +59,73 @@ export default class Alpha {
     lowInit () {
         this.low = new Map();
 
-        this.low.set(1, this.generateArr([
+        this.low.set(1, this[generateArr]([
             'q', 'w', 'e', 'r', 'y', 't', 'u', 'i', 'o', 'p' 
         ]));
 
-        this.low.set(2, this.generateArr([
+        this.low.set(2, this[generateArr]([
             'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l'
         ]));
 
-        this.low.set(3, this.generateArr([
+        this.low.set(3, this[generateArr]([
             'z', 'x', 'c', 'v', 'b', 'n', 'm'
         ]));
 
-        this.low.set('buttons', this.generateButton('low'));
+        this.low.set('buttons', this[generateButton]('low'));
     };
 
     upInit () {
         this.up = new Map();
 
-        this.up.set(1, this.generateArr([
+        this.up.set(1, this[generateArr]([
             'Q', 'W', 'E', 'R', 'Y', 'T', 'U', 'I', 'O', 'P' 
         ]));
 
-        this.up.set(2, this.generateArr([
+        this.up.set(2, this[generateArr]([
             'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'
         ]));
 
-        this.up.set(3, this.generateArr([
+        this.up.set(3, this[generateArr]([
             'Z', 'X', 'C', 'V', 'B', 'N', 'M'
         ]));
+
+        this.low.set('buttons', this[generateButton]('up'));
     };
 
     numberInit () {
         this.number = new Map();
 
-        this.number.set(1, this.generateArr([
+        this.number.set(1, this[generateArr]([
             '1', '2', '3', '4', '5', '6', '7', '8', '9', '0'
         ]));
 
-        this.number.set(2, this.generateArr([
+        this.number.set(2, this[generateArr]([
             '-', '/', ':', ';', '(', ')', '$', '&', '@', '"'
         ]));
 
-        this.number.set(3, this.generateArr([
+        this.number.set(3, this[generateArr]([
             '.', ',', '?', '!', "'"
         ]));
+
+        this.low.set('buttons', this[generateButton]('number'));
     };
 
     symbolInit () {
         this.symbol = new Map();
 
-        this.symbol.set(1, this.generateArr([
+        this.symbol.set(1, this[generateArr]([
             '[', ']', '{', '}', '#', '%', '^', '*', '+', '='
         ]));
 
-        this.symbol.set(2, this.generateArr([
+        this.symbol.set(2, this[generateArr]([
             '_', '\\', '|', '~', '<', '>', '€', '£', '¥', '•'
         ]));
 
-        this.symbol.set(3, this.generateArr([
+        this.symbol.set(3, this[generateArr]([
             '.', ',', '?', '!', "'"
         ]));
+
+        this.low.set('buttons', this[generateButton]('symbol'));
     };
 
     // 功能区初始化
@@ -124,7 +135,7 @@ export default class Alpha {
         const gen = (v, x, y, type) => {
             return new Button(
                 Object.assign(
-                    this.generate(v),
+                    this[generate](v),
                     {
                         x: x,
                         y: y,
@@ -151,7 +162,7 @@ export default class Alpha {
         ));
     };
 
-    generate (value) {
+    [generate] (value) {
         return {
             value: value,
             width: this.prop.width,
@@ -167,11 +178,11 @@ export default class Alpha {
         }
     };
 
-    generateArr (arr) {
-        return arr.map((v) => this.generate(v));
+    [generateArr] (arr) {
+        return arr.map((v) => this[generate](v));
     };
 
-    generateButton (name) {
+    [generateButton] (name) {
         let buttonArr = [];
 
         for (const [key, value] of this[name]) {
