@@ -89,7 +89,7 @@ export default class Alpha {
             'Z', 'X', 'C', 'V', 'B', 'N', 'M'
         ]));
 
-        this.low.set('buttons', this[generateButton]('up'));
+        this.up.set('buttons', this[generateButton]('up'));
     };
 
     numberInit () {
@@ -107,7 +107,7 @@ export default class Alpha {
             '.', ',', '?', '!', "'"
         ]));
 
-        this.low.set('buttons', this[generateButton]('number'));
+        this.number.set('buttons', this[generateButton]('number'));
     };
 
     symbolInit () {
@@ -125,7 +125,7 @@ export default class Alpha {
             '.', ',', '?', '!', "'"
         ]));
 
-        this.low.set('buttons', this[generateButton]('symbol'));
+        this.symbol.set('buttons', this[generateButton]('symbol'));
     };
 
     // 功能区初始化

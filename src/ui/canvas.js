@@ -5,14 +5,18 @@
 import Button from 'UI/button';
 import Alpha from 'UI/alpha';
 
+import { functionInput } from 'UI/function';
+
 export default class Canvas {
 
     rate: number; // 屏幕对于320的倍率
     width: number; // 屏幕宽度
     height: number; // 屏幕高度
 
+    buttonLayer: Function; // buttons 面板够赞函数
     buttons: Array<Button>; // button 数组
     touching: Button; // 选中的元素
+    layerName: string; // 当前面板名称
 
     constructor (canvas, ctx) {
         this.canvas = canvas;
@@ -23,7 +27,8 @@ export default class Canvas {
         this.styleInit();
         this.sizeInit();
 
-        this.buttonInit();
+        this.buttonLayer = this.buttonInit();
+        this.buttons = this.buttonLayer('low');
         this.eventInit();
 
         this.draw();
@@ -125,10 +130,21 @@ export default class Canvas {
      * 初始化面板上按钮
      */
     buttonInit () {
-        this.buttons = [];
-        this.buttons = this.alpha.low.get('buttons');
+        const buttons = {
+            low: this.alpha.low.get('buttons').concat(this.alpha.func),
+            up: this.alpha.up.get('buttons').concat(this.alpha.func),
+            number: this.alpha.number.get('buttons').concat(this.alpha.func),
+            symbol: this.alpha.symbol.get('buttons').concat(this.alpha.func)
+        };
 
+        this.buttons = this.alpha.low.get('buttons');
         this.buttons = this.buttons.concat(this.alpha.func);
+
+        return (name) => {
+            this.layerName = name;
+
+            return buttons[name];
+        }
     };
 
     /**
@@ -136,7 +152,7 @@ export default class Canvas {
      */
     input () {
         if (this.touching.type) {
-            console.log(this.touching.type);
+            functionInput.call(this, this.touching.type);
         } else {
             console.log(this.touching.value);
         }
@@ -152,6 +168,13 @@ export default class Canvas {
         for (let i of this.buttons) {
             i.draw();
         }
+    };
+
+    changeLowUp () {
+        console.log(1);
+        this.buttons = 
+            this.layerName === 'low' ? this.buttonLayer('up') : this.buttonLayer('low');
+        this.draw();
     };
 
     /**

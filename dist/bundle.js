@@ -200,7 +200,6 @@ var Button = function () {
 /**
  * @description class canvas 与 class button 中间层
  */
-// 定义私有方法symbol
 var generateArr = Symbol('generateArr');
 var generate = Symbol('generate');
 var generateButton = Symbol('generateButton');
@@ -279,7 +278,7 @@ var Alpha = function () {
 
             this.up.set(3, this[generateArr](['Z', 'X', 'C', 'V', 'B', 'N', 'M']));
 
-            this.low.set('buttons', this[generateButton]('up'));
+            this.up.set('buttons', this[generateButton]('up'));
         }
     }, {
         key: 'numberInit',
@@ -292,7 +291,7 @@ var Alpha = function () {
 
             this.number.set(3, this[generateArr](['.', ',', '?', '!', "'"]));
 
-            this.low.set('buttons', this[generateButton]('number'));
+            this.number.set('buttons', this[generateButton]('number'));
         }
     }, {
         key: 'symbolInit',
@@ -305,7 +304,7 @@ var Alpha = function () {
 
             this.symbol.set(3, this[generateArr](['.', ',', '?', '!', "'"]));
 
-            this.low.set('buttons', this[generateButton]('symbol'));
+            this.symbol.set('buttons', this[generateButton]('symbol'));
         }
     }, {
         key: 'functionInit',
@@ -402,6 +401,17 @@ var Alpha = function () {
 }();
 
 /**
+ * @description 大键位功能区功能函数
+ */
+
+// 大键位函数入口，this 指向Canvas 通过call方法调用 不能写成箭头函数
+var functionInput = function functionInput(type) {
+    if (type === 'shift') {
+        this.changeLowUp();
+    }
+};
+
+/**
  * @description canvas 画布容器
  */
 
@@ -411,8 +421,10 @@ var Canvas = function () {
     // 屏幕宽度
     // 屏幕高度
 
+    // buttons 面板够赞函数
     // button 数组
     // 选中的元素
+    // 当前面板名称
 
     function Canvas(canvas, ctx) {
         classCallCheck(this, Canvas);
@@ -425,7 +437,8 @@ var Canvas = function () {
         this.styleInit();
         this.sizeInit();
 
-        this.buttonInit();
+        this.buttonLayer = this.buttonInit();
+        this.buttons = this.buttonLayer('low');
         this.eventInit();
 
         this.draw();
@@ -592,10 +605,23 @@ var Canvas = function () {
          * 初始化面板上按钮
          */
         value: function buttonInit() {
-            this.buttons = [];
-            this.buttons = this.alpha.low.get('buttons');
+            var _this2 = this;
 
+            var buttons = {
+                low: this.alpha.low.get('buttons').concat(this.alpha.func),
+                up: this.alpha.up.get('buttons').concat(this.alpha.func),
+                number: this.alpha.number.get('buttons').concat(this.alpha.func),
+                symbol: this.alpha.symbol.get('buttons').concat(this.alpha.func)
+            };
+
+            this.buttons = this.alpha.low.get('buttons');
             this.buttons = this.buttons.concat(this.alpha.func);
+
+            return function (name) {
+                _this2.layerName = name;
+
+                return buttons[name];
+            };
         }
     }, {
         key: 'input',
@@ -606,7 +632,7 @@ var Canvas = function () {
          */
         value: function input() {
             if (this.touching.type) {
-                console.log(this.touching.type);
+                functionInput.call(this, this.touching.type);
             } else {
                 console.log(this.touching.value);
             }
@@ -644,6 +670,13 @@ var Canvas = function () {
                     }
                 }
             }
+        }
+    }, {
+        key: 'changeLowUp',
+        value: function changeLowUp() {
+            console.log(1);
+            this.buttons = this.layerName === 'low' ? this.buttonLayer('up') : this.buttonLayer('low');
+            this.draw();
         }
     }, {
         key: 'clear',
