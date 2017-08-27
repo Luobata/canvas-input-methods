@@ -1,6 +1,7 @@
 /**
  * @description class canvas 与 class button 中间层
  */
+import Button from 'UI/button';
 
 export default class Alpha {
 
@@ -8,11 +9,14 @@ export default class Alpha {
     up: Map; // 大写字母面板
     number: Map; // 数字面板
     symbol: Map; // 符号面板
+    func: Map; // 功能区面板
     rate: number; // 比例
 
     /**
+     * @param {number} prop.layoutWidth         整个画布宽度
      * @param {number} prop.width               alpha宽度
      * @param {number} prop.height              alpha高度
+     * @param {number} prop.funcWidth           alpha功能型按键宽度
      * @param {number} prop.borderRadius        alpha圆角
      * @param {string} prop.size                字体大小(带px)
      * @param {string} prop.family              字体类型
@@ -25,10 +29,12 @@ export default class Alpha {
      * @param {number} prop.paddingHeight       每个button的上下距离
      * @param {number} prop.startX              canvas布局的左上角位置x
      * @param {number} prop.startY              canvas布局的左上角位置y
+     * @param {string} prop.type                输入内容的类型 只有功能型按钮才有
      */
     prop: object;
 
-    constructor (alpha, rate) {
+    constructor (alpha, rate, ctx) {
+        this.ctx = ctx;
         this.rate = rate;
         this.prop = alpha;
 
@@ -37,9 +43,12 @@ export default class Alpha {
 
     init () {
         this.lowInit();
+        this.prop.startX = (this.prop.layoutWidth - this.low.get(1).length * this.prop.width - (this.low.get(1).length - 1) * this.prop.paddingWidth) / 2;
         this.upInit();
         this.numberInit();
         this.symbolInit();
+
+        this.functionInit();
     };
 
     lowInit () {
@@ -56,6 +65,8 @@ export default class Alpha {
         this.low.set(3, this.generateArr([
             'z', 'x', 'c', 'v', 'b', 'n', 'm'
         ]));
+
+        this.low.set('buttons', this.generateButton('low'));
     };
 
     upInit () {
@@ -106,6 +117,40 @@ export default class Alpha {
         ]));
     };
 
+    // 功能区初始化
+    functionInit () {
+        this.func = [];
+
+        const gen = (v, x, y, type) => {
+            return new Button(
+                Object.assign(
+                    this.generate(v),
+                    {
+                        x: x,
+                        y: y,
+                        width: this.prop.funcWidth,
+                        type: type
+                    }
+                ),
+                this.ctx
+            );
+        };
+
+        this.func.push(gen(
+            '↑',
+            this.prop.startX,
+            this.low.get(3)[0].y,
+            'shift'
+        ));
+
+        this.func.push(gen(
+            '←',
+            this.prop.layoutWidth - this.prop.paddingWidth - this.prop.funcWidth,
+            this.low.get(3)[0].y,
+            'delete'
+        ));
+    };
+
     generate (value) {
         return {
             value: value,
@@ -124,5 +169,25 @@ export default class Alpha {
 
     generateArr (arr) {
         return arr.map((v) => this.generate(v));
+    };
+
+    generateButton (name) {
+        let buttonArr = [];
+
+        for (const [key, value] of this[name]) {
+            for (let i = 0; i < value.length; i++) {
+                let item = value[i];
+                let alphaStartX = (this.prop.layoutWidth - value.length * this.prop.width - (value.length - 1) * this.prop.paddingWidth) / 2;
+                item.x = alphaStartX + i * (this.prop.paddingWidth + this.prop.width);
+                item.y = this.prop.startY + (key - 1) * (this.prop.paddingHeight + this.prop.height);
+                let button = new Button(
+                    item,
+                    this.ctx
+                );
+                buttonArr.push(button);
+            }
+        }
+
+        return buttonArr;
     };
 };

@@ -122,6 +122,8 @@ var Button = function () {
     // txt
 
 
+    // 按钮类型 只有功能键有
+
     function Button(conf, ctx) {
         classCallCheck(this, Button);
 
@@ -140,6 +142,7 @@ var Button = function () {
         this.size = conf.size;
         this.family = conf.family;
         this.weight = conf.weight;
+        this.type = conf.type || '';
 
         this.untouch();
     }
@@ -197,18 +200,20 @@ var Button = function () {
 /**
  * @description class canvas 与 class button 中间层
  */
-
 var Alpha = function () {
 
     // 小写字母面板
     // 大写字母面板
     // 数字面板
     // 符号面板
+    // 功能区面板
     // 比例
 
     /**
+     * @param {number} prop.layoutWidth         整个画布宽度
      * @param {number} prop.width               alpha宽度
      * @param {number} prop.height              alpha高度
+     * @param {number} prop.funcWidth           alpha功能型按键宽度
      * @param {number} prop.borderRadius        alpha圆角
      * @param {string} prop.size                字体大小(带px)
      * @param {string} prop.family              字体类型
@@ -221,11 +226,13 @@ var Alpha = function () {
      * @param {number} prop.paddingHeight       每个button的上下距离
      * @param {number} prop.startX              canvas布局的左上角位置x
      * @param {number} prop.startY              canvas布局的左上角位置y
+     * @param {string} prop.type                输入内容的类型 只有功能型按钮才有
      */
 
-    function Alpha(alpha, rate) {
+    function Alpha(alpha, rate, ctx) {
         classCallCheck(this, Alpha);
 
+        this.ctx = ctx;
         this.rate = rate;
         this.prop = alpha;
 
@@ -236,9 +243,12 @@ var Alpha = function () {
         key: 'init',
         value: function init() {
             this.lowInit();
+            this.prop.startX = (this.prop.layoutWidth - this.low.get(1).length * this.prop.width - (this.low.get(1).length - 1) * this.prop.paddingWidth) / 2;
             this.upInit();
             this.numberInit();
             this.symbolInit();
+
+            this.functionInit();
         }
     }, {
         key: 'lowInit',
@@ -250,6 +260,8 @@ var Alpha = function () {
             this.low.set(2, this.generateArr(['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l']));
 
             this.low.set(3, this.generateArr(['z', 'x', 'c', 'v', 'b', 'n', 'm']));
+
+            this.low.set('buttons', this.generateButton('low'));
         }
     }, {
         key: 'upInit',
@@ -285,6 +297,29 @@ var Alpha = function () {
             this.symbol.set(3, this.generateArr(['.', ',', '?', '!', "'"]));
         }
     }, {
+        key: 'functionInit',
+
+
+        // 功能区初始化
+        value: function functionInit() {
+            var _this = this;
+
+            this.func = [];
+
+            var gen = function gen(v, x, y, type) {
+                return new Button(Object.assign(_this.generate(v), {
+                    x: x,
+                    y: y,
+                    width: _this.prop.funcWidth,
+                    type: type
+                }), _this.ctx);
+            };
+
+            this.func.push(gen('↑', this.prop.startX, this.low.get(3)[0].y, 'shift'));
+
+            this.func.push(gen('←', this.prop.layoutWidth - this.prop.paddingWidth - this.prop.funcWidth, this.low.get(3)[0].y, 'delete'));
+        }
+    }, {
         key: 'generate',
         value: function generate(value) {
             return {
@@ -304,15 +339,60 @@ var Alpha = function () {
     }, {
         key: 'generateArr',
         value: function generateArr(arr) {
-            var _this = this;
+            var _this2 = this;
 
             return arr.map(function (v) {
-                return _this.generate(v);
+                return _this2.generate(v);
             });
+        }
+    }, {
+        key: 'generateButton',
+        value: function generateButton(name) {
+            var buttonArr = [];
+
+            var _iteratorNormalCompletion = true;
+            var _didIteratorError = false;
+            var _iteratorError = undefined;
+
+            try {
+                for (var _iterator = this[name][Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                    var _step$value = slicedToArray(_step.value, 2),
+                        key = _step$value[0],
+                        value = _step$value[1];
+
+                    for (var i = 0; i < value.length; i++) {
+                        var item = value[i];
+                        var alphaStartX = (this.prop.layoutWidth - value.length * this.prop.width - (value.length - 1) * this.prop.paddingWidth) / 2;
+                        item.x = alphaStartX + i * (this.prop.paddingWidth + this.prop.width);
+                        item.y = this.prop.startY + (key - 1) * (this.prop.paddingHeight + this.prop.height);
+                        var button = new Button(item, this.ctx);
+                        buttonArr.push(button);
+                    }
+                }
+            } catch (err) {
+                _didIteratorError = true;
+                _iteratorError = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion && _iterator.return) {
+                        _iterator.return();
+                    }
+                } finally {
+                    if (_didIteratorError) {
+                        throw _iteratorError;
+                    }
+                }
+            }
+
+            return buttonArr;
         }
     }]);
     return Alpha;
 }();
+
+/**
+ * @description canvas 画布容器
+ */
 
 var Canvas = function () {
 
@@ -349,8 +429,10 @@ var Canvas = function () {
          */
         value: function alphaInit() {
             this.alpha = new Alpha({
+                layoutWidth: this.width,
                 width: 27.5 * this.rate,
                 height: 36 * this.rate,
+                funcWidth: 40 * this.rate,
                 borderRadius: 5,
                 size: '16px',
                 family: 'Microsoft yahei',
@@ -362,8 +444,7 @@ var Canvas = function () {
                 paddingWidth: 4 * this.rate,
                 paddingHeight: 8 * this.rate,
                 startY: 10
-            }, this.rate);
-            this.alpha.startX = (this.width - this.alpha.low.get(1).length * this.alpha.prop.width - (this.alpha.low.get(1).length - 1) * this.alpha.prop.paddingWidth) / 2;
+            }, this.rate, this.ctx);
             console.log(this.alpha);
         }
     }, {
@@ -376,6 +457,7 @@ var Canvas = function () {
         value: function windowInit() {
             var width = document.body.clientWidth;
             var rate = parseInt(width * 12 / 320, 10);
+
             this.rate = rate / 12;
             this.width = width;
             this.height = width * 0.8;
@@ -500,26 +582,42 @@ var Canvas = function () {
          */
         value: function buttonInit() {
             this.buttons = [];
+            this.buttons = this.alpha.low.get('buttons');
+
+            this.buttons = this.buttons.concat(this.alpha.func);
+        }
+    }, {
+        key: 'input',
+
+
+        /**
+         * 输出事件
+         */
+        value: function input() {
+            if (this.touching.type) {
+                console.log(this.touching.type);
+            } else {
+                console.log(this.touching.value);
+            }
+            this.touching = null;
+        }
+    }, {
+        key: 'draw',
+        value: function draw() {
+            this.clear();
+            this.ctx.fillStyle = '#d7d8dc';
+            this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+            this.ctx.fill();
 
             var _iteratorNormalCompletion3 = true;
             var _didIteratorError3 = false;
             var _iteratorError3 = undefined;
 
             try {
-                for (var _iterator3 = this.alpha.low[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-                    var _step3$value = slicedToArray(_step3.value, 2),
-                        key = _step3$value[0],
-                        value = _step3$value[1];
+                for (var _iterator3 = this.buttons[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+                    var i = _step3.value;
 
-                    for (var i = 0; i < value.length; i++) {
-                        var item = value[i];
-                        var alphaStartX = (this.width - value.length * this.alpha.prop.width - (value.length - 1) * this.alpha.prop.paddingWidth) / 2;
-                        var button = new Button(Object.assign({
-                            x: alphaStartX + i * (this.alpha.prop.paddingWidth + this.alpha.prop.width),
-                            y: this.alpha.prop.startY + (key - 1) * (this.alpha.prop.paddingHeight + this.alpha.prop.height)
-                        }, item), this.ctx);
-                        this.buttons.push(button);
-                    }
+                    i.draw();
                 }
             } catch (err) {
                 _didIteratorError3 = true;
@@ -532,50 +630,6 @@ var Canvas = function () {
                 } finally {
                     if (_didIteratorError3) {
                         throw _iteratorError3;
-                    }
-                }
-            }
-        }
-    }, {
-        key: 'input',
-
-
-        /**
-         * 输出事件
-         */
-        value: function input() {
-            console.log(this.touching.value);
-            this.touching = null;
-        }
-    }, {
-        key: 'draw',
-        value: function draw() {
-            this.clear();
-            this.ctx.fillStyle = '#d7d8dc';
-            this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-            this.ctx.fill();
-
-            var _iteratorNormalCompletion4 = true;
-            var _didIteratorError4 = false;
-            var _iteratorError4 = undefined;
-
-            try {
-                for (var _iterator4 = this.buttons[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
-                    var i = _step4.value;
-
-                    i.draw();
-                }
-            } catch (err) {
-                _didIteratorError4 = true;
-                _iteratorError4 = err;
-            } finally {
-                try {
-                    if (!_iteratorNormalCompletion4 && _iterator4.return) {
-                        _iterator4.return();
-                    }
-                } finally {
-                    if (_didIteratorError4) {
-                        throw _iteratorError4;
                     }
                 }
             }

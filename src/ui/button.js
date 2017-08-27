@@ -16,6 +16,8 @@ export default class Button {
     family: string;
     weight: number;
 
+    type: string; // 按钮类型 只有功能键有
+
     constructor (conf, ctx) {
         this.ctx = ctx;
         this.x = conf.x;
@@ -32,6 +34,7 @@ export default class Button {
         this.size = conf.size;
         this.family = conf.family;
         this.weight = conf.weight;
+        this.type = conf.type || '';
 
         this.untouch();
     };

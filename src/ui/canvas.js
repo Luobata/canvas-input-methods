@@ -1,3 +1,7 @@
+/**
+ * @description canvas 画布容器
+ */
+
 import Button from 'UI/button';
 import Alpha from 'UI/alpha';
 
@@ -30,8 +34,10 @@ export default class Canvas {
      */
     alphaInit () {
         this.alpha = new Alpha({
+            layoutWidth: this.width,
             width: 27.5 * this.rate,
             height: 36 * this.rate,
+            funcWidth: 40 * this.rate,
             borderRadius: 5,
             size: '16px',
             family: 'Microsoft yahei',
@@ -43,8 +49,7 @@ export default class Canvas {
             paddingWidth: 4 * this.rate,
             paddingHeight: 8 * this.rate,
             startY: 10
-        }, this.rate);
-        this.alpha.startX = (this.width - this.alpha.low.get(1).length * this.alpha.prop.width - (this.alpha.low.get(1).length - 1) * this.alpha.prop.paddingWidth) / 2;
+        }, this.rate, this.ctx);
         console.log(this.alpha);
     };
 
@@ -54,6 +59,7 @@ export default class Canvas {
     windowInit () {
         const width = document.body.clientWidth;
         const rate = parseInt(width * 12 / 320, 10);
+
         this.rate = rate / 12;
         this.width = width;
         this.height = width * 0.8;
@@ -120,28 +126,20 @@ export default class Canvas {
      */
     buttonInit () {
         this.buttons = [];
+        this.buttons = this.alpha.low.get('buttons');
 
-        for (const [key, value] of this.alpha.low) {
-            for (let i = 0; i < value.length; i++) {
-                let item = value[i];
-                let alphaStartX = (this.width - value.length * this.alpha.prop.width - (value.length - 1) * this.alpha.prop.paddingWidth) / 2;
-                let button = new Button(
-                        Object.assign({
-                            x: alphaStartX + i * (this.alpha.prop.paddingWidth + this.alpha.prop.width),
-                            y: this.alpha.prop.startY + (key - 1) * (this.alpha.prop.paddingHeight + this.alpha.prop.height),
-                        }, item),
-                        this.ctx
-                        );
-                this.buttons.push(button);
-            }
-        }
+        this.buttons = this.buttons.concat(this.alpha.func);
     };
 
     /**
      * 输出事件
      */
     input () {
-        console.log(this.touching.value);
+        if (this.touching.type) {
+            console.log(this.touching.type);
+        } else {
+            console.log(this.touching.value);
+        }
         this.touching = null;
     };
 
