@@ -130,20 +130,10 @@ export default class Canvas {
      * 初始化面板上按钮
      */
     buttonInit () {
-        const buttons = {
-            low: this.alpha.low.get('buttons').concat(this.alpha.func),
-            up: this.alpha.up.get('buttons').concat(this.alpha.func),
-            number: this.alpha.number.get('buttons').concat(this.alpha.func),
-            symbol: this.alpha.symbol.get('buttons').concat(this.alpha.func)
-        };
-
-        this.buttons = this.alpha.low.get('buttons');
-        this.buttons = this.buttons.concat(this.alpha.func);
-
         return (name) => {
             this.layerName = name;
 
-            return buttons[name];
+            return this.alpha[name].get('buttons').concat(this.alpha.func.get(name));
         }
     };
 
@@ -171,7 +161,6 @@ export default class Canvas {
     };
 
     changeLowUp () {
-        console.log(1);
         this.buttons = 
             this.layerName === 'low' ? this.buttonLayer('up') : this.buttonLayer('low');
         this.draw();

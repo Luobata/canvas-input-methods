@@ -314,7 +314,7 @@ var Alpha = function () {
         value: function functionInit() {
             var _this = this;
 
-            this.func = [];
+            this.func = new Map();
 
             var gen = function gen(v, x, y, type) {
                 return new Button(Object.assign(_this[generate](v), {
@@ -325,9 +325,30 @@ var Alpha = function () {
                 }), _this.ctx);
             };
 
-            this.func.push(gen('↑', this.prop.startX, this.low.get(3)[0].y, 'shift'));
+            var shiftBtn = gen('↑', this.prop.startX, this.getLineHeight(3), 'shift');
 
-            this.func.push(gen('←', this.prop.layoutWidth - this.prop.paddingWidth - this.prop.funcWidth, this.low.get(3)[0].y, 'delete'));
+            var deleteBtn = gen('←', this.prop.layoutWidth - this.prop.paddingWidth - this.prop.funcWidth, this.getLineHeight(3), 'delete');
+
+            var numberBtn = gen('123', this.prop.startX, this.getLineHeight(4), 'number');
+
+            var spaceBtn = gen('space', numberBtn.x + numberBtn.width + this.prop.paddingWidth, this.getLineHeight(4), 'space');
+
+            var sendBtn = gen('Send', spaceBtn.x + spaceBtn.width + this.prop.paddingWidth, this.getLineHeight(4), 'send');
+
+            this.func.set('low', [shiftBtn, deleteBtn, numberBtn, spaceBtn, sendBtn]);
+
+            this.func.set('up', [shiftBtn, deleteBtn, numberBtn, spaceBtn, sendBtn]);
+        }
+    }, {
+        key: 'getLineHeight',
+
+
+        /**
+         * 获取某行起始高度
+         * @param {number} line 行数 从 1 开始
+         */
+        value: function getLineHeight(line) {
+            return this.prop.startY + (line - 1) * (this.prop.height + this.prop.paddingHeight);
         }
     }, {
         key: generate,
@@ -409,6 +430,16 @@ var functionInput = function functionInput(type) {
     if (type === 'shift') {
         this.changeLowUp();
     }
+
+    if (type === 'delete') {}
+
+    if (type === 'space') {}
+
+    if (type === 'number') {}
+
+    if (type === 'symbol') {}
+
+    if (type === 'send') {}
 };
 
 /**
@@ -607,20 +638,10 @@ var Canvas = function () {
         value: function buttonInit() {
             var _this2 = this;
 
-            var buttons = {
-                low: this.alpha.low.get('buttons').concat(this.alpha.func),
-                up: this.alpha.up.get('buttons').concat(this.alpha.func),
-                number: this.alpha.number.get('buttons').concat(this.alpha.func),
-                symbol: this.alpha.symbol.get('buttons').concat(this.alpha.func)
-            };
-
-            this.buttons = this.alpha.low.get('buttons');
-            this.buttons = this.buttons.concat(this.alpha.func);
-
             return function (name) {
                 _this2.layerName = name;
 
-                return buttons[name];
+                return _this2.alpha[name].get('buttons').concat(_this2.alpha.func.get(name));
             };
         }
     }, {
@@ -674,7 +695,6 @@ var Canvas = function () {
     }, {
         key: 'changeLowUp',
         value: function changeLowUp() {
-            console.log(1);
             this.buttons = this.layerName === 'low' ? this.buttonLayer('up') : this.buttonLayer('low');
             this.draw();
         }

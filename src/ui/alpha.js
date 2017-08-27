@@ -130,7 +130,7 @@ export default class Alpha {
 
     // 功能区初始化
     functionInit () {
-        this.func = [];
+        this.func = new Map(); 
 
         const gen = (v, x, y, type) => {
             return new Button(
@@ -147,19 +147,65 @@ export default class Alpha {
             );
         };
 
-        this.func.push(gen(
+
+        const shiftBtn = gen(
             '↑',
             this.prop.startX,
-            this.low.get(3)[0].y,
+            this.getLineHeight(3),
             'shift'
-        ));
+        );
 
-        this.func.push(gen(
+        const deleteBtn = gen(
             '←',
             this.prop.layoutWidth - this.prop.paddingWidth - this.prop.funcWidth,
-            this.low.get(3)[0].y,
+            this.getLineHeight(3),
             'delete'
-        ));
+        );
+
+        const numberBtn = gen(
+            '123',
+            this.prop.startX,
+            this.getLineHeight(4),
+            'number'
+        );
+
+        const spaceBtn = gen(
+            'space',
+            numberBtn.x + numberBtn.width + this.prop.paddingWidth,
+            this.getLineHeight(4),
+            'space'
+        );
+
+        const sendBtn = gen(
+            'Send',
+            spaceBtn.x + spaceBtn.width + this.prop.paddingWidth,
+            this.getLineHeight(4),
+            'send'
+        );
+
+        this.func.set('low', [
+            shiftBtn,
+            deleteBtn,
+            numberBtn,
+            spaceBtn,
+            sendBtn
+        ]);
+
+        this.func.set('up', [
+            shiftBtn,
+            deleteBtn,
+            numberBtn,
+            spaceBtn,
+            sendBtn
+        ]);
+    };
+
+    /**
+     * 获取某行起始高度
+     * @param {number} line 行数 从 1 开始
+     */
+    getLineHeight (line) {
+        return this.prop.startY + (line - 1) * (this.prop.height + this.prop.paddingHeight);
     };
 
     [generate] (value) {

@@ -7,4 +7,19 @@ export const functionInput = function (type) {
     if (type === 'shift') {
         this.changeLowUp();
     }
+
+    if (type === 'delete') {
+    }
+
+    if (type === 'space') {
+    }
+
+    if (type === 'number') {
+    }
+
+    if (type === 'symbol') {
+    }
+
+    if (type === 'send') {
+    }
 };
