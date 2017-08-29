@@ -21,7 +21,8 @@ export default class Canvas {
 
     isShow: Boolean;
 
-    input: Input;
+    inputEl: Input;
+    windowMouse: Touch;
 
     constructor (canvas, ctx) {
         this.canvas = canvas;
@@ -135,6 +136,10 @@ export default class Canvas {
         this.canvas.addEventListener('touchmove', (e) => {
             moveIn(e);
         });
+
+        window.addEventListener('touchstart', (e) => {
+            this.windowMouse = e.touches[0];
+        });
     };
 
     /*
@@ -158,6 +163,7 @@ export default class Canvas {
             functionInput.call(this, this.touching.type);
         } else {
             console.log(this.touching.value);
+            this.inputEl.input(this.touching.value);
         }
         this.touching = null;
     };
@@ -192,8 +198,12 @@ export default class Canvas {
         this.draw();
     };
 
-    bindCanvas (input) {
-        this.input = input;
+    setInput (input) {
+        this.inputEl = input;
+    };
+
+    active () {
+        return this.isShow && (this.windowMouse.clientY >= (screen.height - this.height));
     };
 
     /**

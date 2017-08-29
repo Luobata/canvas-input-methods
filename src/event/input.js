@@ -3,6 +3,8 @@
  */
 
 export default class Input {
+    value: string;
+
     constructor (el, canvas) {
         this.canvas = canvas;
         this.el = el;
@@ -11,6 +13,8 @@ export default class Input {
     };
 
     init () {
+        this.value = '';
+
         this.attributeInit();
         this.eventInit();
         this.bindCanvas();
@@ -26,11 +30,19 @@ export default class Input {
         });
 
         this.el.addEventListener('blur', (e) => {
-            this.canvas.hide();
+            if (this.canvas.active()) {
+                this.el.focus();
+            } else {
+                this.canvas.hide();
+            }
         });
     };
 
     bindCanvas () {
         this.canvas.setInput(this);
+    };
+
+    input (val) {
+        this.el.value += val;
     };
 };

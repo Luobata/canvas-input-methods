@@ -458,6 +458,8 @@ var Input = function () {
     createClass(Input, [{
         key: 'init',
         value: function init() {
+            this.value = '';
+
             this.attributeInit();
             this.eventInit();
             this.bindCanvas();
@@ -477,13 +479,22 @@ var Input = function () {
             });
 
             this.el.addEventListener('blur', function (e) {
-                _this.canvas.hide();
+                if (_this.canvas.active()) {
+                    _this.el.focus();
+                } else {
+                    _this.canvas.hide();
+                }
             });
         }
     }, {
         key: 'bindCanvas',
         value: function bindCanvas() {
             this.canvas.setInput(this);
+        }
+    }, {
+        key: 'input',
+        value: function input(val) {
+            this.el.value += val;
         }
     }]);
     return Input;
@@ -701,6 +712,10 @@ var Canvas = function () {
             this.canvas.addEventListener('touchmove', function (e) {
                 moveIn(e);
             });
+
+            window.addEventListener('touchstart', function (e) {
+                _this.windowMouse = e.touches[0];
+            });
         }
     }, {
         key: 'buttonInit',
@@ -732,6 +747,7 @@ var Canvas = function () {
                 functionInput.call(this, this.touching.type);
             } else {
                 console.log(this.touching.value);
+                this.inputEl.input(this.touching.value);
             }
             this.touching = null;
         }
@@ -790,9 +806,14 @@ var Canvas = function () {
             this.draw();
         }
     }, {
-        key: 'bindCanvas',
-        value: function bindCanvas(input) {
-            this.input = input;
+        key: 'setInput',
+        value: function setInput(input) {
+            this.inputEl = input;
+        }
+    }, {
+        key: 'active',
+        value: function active() {
+            return this.isShow && this.windowMouse.clientY >= screen.height - this.height;
         }
     }, {
         key: 'clear',
