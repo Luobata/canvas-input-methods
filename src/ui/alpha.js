@@ -132,15 +132,19 @@ export default class Alpha {
     functionInit () {
         this.func = new Map(); 
 
-        const gen = (v, x, y, type) => {
+        const gen = (v, x, y, type, color = {}, width = this.prop.funcWidth) => {
             return new Button(
                 Object.assign(
                     this[generate](v),
                     {
                         x: x,
                         y: y,
-                        width: this.prop.funcWidth,
-                        type: type
+                        width: width,
+                        type: type,
+                        untouchBackground: color.untouchBackground || this.prop.untouchBackground,
+                        untouchColor: color.untouchColor|| this.prop.touchBackground,
+                        touchBackground: color.touchBackground || this.prop.touchBackground,
+                        touchColor: color.touchColor || this.prop.touchColor
                     }
                 ),
                 this.ctx
@@ -159,28 +163,48 @@ export default class Alpha {
             '←',
             this.prop.layoutWidth - this.prop.paddingWidth - this.prop.funcWidth,
             this.getLineHeight(3),
-            'delete'
+            'delete',
+            {
+                untouchBackground: this.prop.funcColor.normal
+            }
         );
 
         const numberBtn = gen(
             '123',
             this.prop.startX,
             this.getLineHeight(4),
-            'number'
+            'number',
+            {
+                untouchBackground: this.prop.funcColor.normal
+            }
         );
 
-        const spaceBtn = gen(
-            'space',
-            numberBtn.x + numberBtn.width + this.prop.paddingWidth,
-            this.getLineHeight(4),
-            'space'
-        );
-
+        const sendX = this.low.get(3).slice(-1)[0].x;
+        const sendWid = this.prop.width - sendX - (this.prop.width - deleteBtn.x - deleteBtn.width);
         const sendBtn = gen(
             'Send',
-            spaceBtn.x + spaceBtn.width + this.prop.paddingWidth,
+            sendX,
             this.getLineHeight(4),
-            'send'
+            'send',
+            {
+                untouchBackground: this.prop.funcColor.special,
+                untouchColor: this.prop.touchColor,
+                touchBackground: this.prop.touchColor,
+                touchColor: this.prop.funcColor.special
+            },
+            sendWid
+        );
+
+        const spaceX = numberBtn.x + numberBtn.width + this.prop.paddingWidth;
+        const spaceWid = sendX - this.prop.paddingWidth - spaceX;
+        const spaceBtn = gen(
+            'space',
+            spaceX,
+            this.getLineHeight(4),
+            'space',
+            {
+            },
+            spaceWid
         );
 
         this.func.set('low', [

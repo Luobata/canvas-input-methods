@@ -200,6 +200,7 @@ var Button = function () {
 /**
  * @description class canvas 与 class button 中间层
  */
+// 定义私有方法symbol
 var generateArr = Symbol('generateArr');
 var generate = Symbol('generate');
 var generateButton = Symbol('generateButton');
@@ -317,23 +318,43 @@ var Alpha = function () {
             this.func = new Map();
 
             var gen = function gen(v, x, y, type) {
+                var color = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : {};
+                var width = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : _this.prop.funcWidth;
+
                 return new Button(Object.assign(_this[generate](v), {
                     x: x,
                     y: y,
-                    width: _this.prop.funcWidth,
-                    type: type
+                    width: width,
+                    type: type,
+                    untouchBackground: color.untouchBackground || _this.prop.untouchBackground,
+                    untouchColor: color.untouchColor || _this.prop.touchBackground,
+                    touchBackground: color.touchBackground || _this.prop.touchBackground,
+                    touchColor: color.touchColor || _this.prop.touchColor
                 }), _this.ctx);
             };
 
             var shiftBtn = gen('↑', this.prop.startX, this.getLineHeight(3), 'shift');
 
-            var deleteBtn = gen('←', this.prop.layoutWidth - this.prop.paddingWidth - this.prop.funcWidth, this.getLineHeight(3), 'delete');
+            var deleteBtn = gen('←', this.prop.layoutWidth - this.prop.paddingWidth - this.prop.funcWidth, this.getLineHeight(3), 'delete', {
+                untouchBackground: this.prop.funcColor.normal
+            });
 
-            var numberBtn = gen('123', this.prop.startX, this.getLineHeight(4), 'number');
+            var numberBtn = gen('123', this.prop.startX, this.getLineHeight(4), 'number', {
+                untouchBackground: this.prop.funcColor.normal
+            });
 
-            var spaceBtn = gen('space', numberBtn.x + numberBtn.width + this.prop.paddingWidth, this.getLineHeight(4), 'space');
+            var sendX = this.low.get(3).slice(-1)[0].x;
+            var sendWid = this.prop.width - sendX - (this.prop.width - deleteBtn.x - deleteBtn.width);
+            var sendBtn = gen('Send', sendX, this.getLineHeight(4), 'send', {
+                untouchBackground: this.prop.funcColor.special,
+                untouchColor: this.prop.touchColor,
+                touchBackground: this.prop.touchColor,
+                touchColor: this.prop.funcColor.special
+            }, sendWid);
 
-            var sendBtn = gen('Send', spaceBtn.x + spaceBtn.width + this.prop.paddingWidth, this.getLineHeight(4), 'send');
+            var spaceX = numberBtn.x + numberBtn.width + this.prop.paddingWidth;
+            var spaceWid = sendX - this.prop.paddingWidth - spaceX;
+            var spaceBtn = gen('space', spaceX, this.getLineHeight(4), 'space', {}, spaceWid);
 
             this.func.set('low', [shiftBtn, deleteBtn, numberBtn, spaceBtn, sendBtn]);
 
@@ -498,7 +519,11 @@ var Canvas = function () {
                 touchColor: '#fff',
                 paddingWidth: 4 * this.rate,
                 paddingHeight: 8 * this.rate,
-                startY: 10
+                startY: 10,
+                funcColor: {
+                    normal: '#aab2bd',
+                    special: '#007aff'
+                }
             }, this.rate, this.ctx);
             console.log(this.alpha);
         }
@@ -652,6 +677,8 @@ var Canvas = function () {
          * 输出事件
          */
         value: function input() {
+            if (!this.touching) return;
+
             if (this.touching.type) {
                 functionInput.call(this, this.touching.type);
             } else {

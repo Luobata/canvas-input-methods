@@ -53,7 +53,11 @@ export default class Canvas {
             touchColor: '#fff',
             paddingWidth: 4 * this.rate,
             paddingHeight: 8 * this.rate,
-            startY: 10
+            startY: 10,
+            funcColor: {
+                normal: '#aab2bd',
+                special: '#007aff'
+            }
         }, this.rate, this.ctx);
         console.log(this.alpha);
     };
@@ -141,6 +145,8 @@ export default class Canvas {
      * 输出事件
      */
     input () {
+        if (!this.touching) return;
+
         if (this.touching.type) {
             functionInput.call(this, this.touching.type);
         } else {
