@@ -200,7 +200,6 @@ var Button = function () {
 /**
  * @description class canvas 与 class button 中间层
  */
-// 定义私有方法symbol
 var generateArr = Symbol('generateArr');
 var generate = Symbol('generate');
 var generateButton = Symbol('generateButton');
@@ -443,6 +442,54 @@ var Alpha = function () {
 }();
 
 /**
+ * @description input class
+ */
+
+var Input = function () {
+    function Input(el, canvas) {
+        classCallCheck(this, Input);
+
+        this.canvas = canvas;
+        this.el = el;
+
+        this.init();
+    }
+
+    createClass(Input, [{
+        key: 'init',
+        value: function init() {
+            this.attributeInit();
+            this.eventInit();
+            this.bindCanvas();
+        }
+    }, {
+        key: 'attributeInit',
+        value: function attributeInit() {
+            this.el.setAttribute('readonly', true);
+        }
+    }, {
+        key: 'eventInit',
+        value: function eventInit() {
+            var _this = this;
+
+            this.el.addEventListener('touchstart', function (e) {
+                _this.canvas.show();
+            });
+
+            this.el.addEventListener('blur', function (e) {
+                _this.canvas.hide();
+            });
+        }
+    }, {
+        key: 'bindCanvas',
+        value: function bindCanvas() {
+            this.canvas.setInput(this);
+        }
+    }]);
+    return Input;
+}();
+
+/**
  * @description 大键位功能区功能函数
  */
 
@@ -478,6 +525,7 @@ var Canvas = function () {
     // 选中的元素
     // 当前面板名称
 
+
     function Canvas(canvas, ctx) {
         classCallCheck(this, Canvas);
 
@@ -493,6 +541,7 @@ var Canvas = function () {
         this.buttons = this.buttonLayer('low');
         this.eventInit();
 
+        this.hide();
         this.draw();
     }
 
@@ -690,6 +739,8 @@ var Canvas = function () {
         key: 'draw',
         value: function draw() {
             this.clear();
+            if (!this.isShow) return;
+
             this.ctx.fillStyle = '#d7d8dc';
             this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
             this.ctx.fill();
@@ -726,6 +777,24 @@ var Canvas = function () {
             this.draw();
         }
     }, {
+        key: 'hide',
+        value: function hide() {
+            this.isShow = false;
+            this.canvas.height = 0;
+        }
+    }, {
+        key: 'show',
+        value: function show() {
+            this.isShow = true;
+            this.canvas.height = this.height;
+            this.draw();
+        }
+    }, {
+        key: 'bindCanvas',
+        value: function bindCanvas(input) {
+            this.input = input;
+        }
+    }, {
         key: 'clear',
 
 
@@ -739,23 +808,49 @@ var Canvas = function () {
     return Canvas;
 }();
 
-var global_canvas = void 0;
+var global_canvas$1 = void 0;
 
-var init = (function (canvas, ctx) {
-    global_canvas = new Canvas(canvas, ctx);
+var _init = (function (canvas, ctx) {
+    global_canvas$1 = new Canvas(canvas, ctx);
+
+    return global_canvas$1;
 });
 
-var inputMethod = function inputMethod(dom) {
-    var canvas = document.getElementById(dom);
-    var ctx = void 0;
+/**
+ * @description 绑定dom
+ */
+var input = (function (dom, canvas) {
+    var input = document.getElementById(dom);
+    if (!input) {
+        console.error("can't find the binding input dom");
+        return;
+    }
 
-    if (canvas.getContext) {
-        ctx = canvas.getContext('2d');
-        init(canvas, ctx);
+    new Input(input, canvas);
+});
+
+var global_canvas = void 0;
+
+var inputMethod = {
+    init: function init(dom) {
+        var canvas = document.getElementById(dom);
+        var ctx = void 0;
+
+        if (canvas.getContext) {
+            ctx = canvas.getContext('2d');
+            global_canvas = _init(canvas, ctx);
+        }
+    },
+    bind: function bind(dom) {
+        if (!global_canvas) {
+            console.error('init canvas first');
+        }
+        input(dom, global_canvas);
     }
 };
 
-inputMethod('canvas-input-method');
+inputMethod.init('canvas-input-method');
+inputMethod.bind('input');
 
 // module.exports = inputMethod;
 

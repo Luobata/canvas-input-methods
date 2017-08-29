@@ -4,4 +4,6 @@ export let global_canvas;
 
 export default (canvas, ctx) => {
     global_canvas = new Canvas(canvas, ctx);
+
+    return global_canvas;
 };

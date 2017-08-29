@@ -4,6 +4,7 @@
 
 import Button from 'UI/button';
 import Alpha from 'UI/alpha';
+import Input from 'EVENT/input';
 
 import { functionInput } from 'UI/function';
 
@@ -18,9 +19,14 @@ export default class Canvas {
     touching: Button; // 选中的元素
     layerName: string; // 当前面板名称
 
+    isShow: Boolean;
+
+    input: Input;
+
     constructor (canvas, ctx) {
         this.canvas = canvas;
         this.ctx = ctx;
+
 
         this.windowInit();
         this.alphaInit();
@@ -31,6 +37,7 @@ export default class Canvas {
         this.buttons = this.buttonLayer('low');
         this.eventInit();
 
+        this.hide();
         this.draw();
     };
 
@@ -157,6 +164,8 @@ export default class Canvas {
 
     draw () {
         this.clear();
+        if (!this.isShow) return;
+
         this.ctx.fillStyle = '#d7d8dc';
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
         this.ctx.fill();
@@ -170,6 +179,21 @@ export default class Canvas {
         this.buttons = 
             this.layerName === 'low' ? this.buttonLayer('up') : this.buttonLayer('low');
         this.draw();
+    };
+
+    hide () {
+        this.isShow = false;
+        this.canvas.height = 0;
+    };
+
+    show () {
+        this.isShow = true;
+        this.canvas.height = this.height;
+        this.draw();
+    };
+
+    bindCanvas (input) {
+        this.input = input;
     };
 
     /**

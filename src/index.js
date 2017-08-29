@@ -1,16 +1,28 @@
 import init from 'UI/index';
+import input from 'EVENT/index';
 
-const inputMethod = (dom) => {
-    const canvas = document.getElementById(dom);
-    let ctx;
+let global_canvas;
 
-    if (canvas.getContext) {
-        ctx = canvas.getContext('2d');
-        init(canvas, ctx);
+const inputMethod = {
+    init (dom) {
+        const canvas = document.getElementById(dom);
+        let ctx;
+
+        if (canvas.getContext) {
+            ctx = canvas.getContext('2d');
+            global_canvas = init(canvas, ctx);
+        }
+    },
+    bind (dom) {
+        if (!global_canvas) {
+            console.error('init canvas first');
+        }
+        input(dom, global_canvas);
     }
 };
 
-inputMethod('canvas-input-method');
+inputMethod.init('canvas-input-method');
+inputMethod.bind('input');
 
 // module.exports = inputMethod;
 export default inputMethod;
