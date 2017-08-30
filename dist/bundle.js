@@ -552,8 +552,8 @@ var Canvas = function () {
         this.buttons = this.buttonLayer('low');
         this.eventInit();
 
-        //this.hide();
-        this.show();
+        this.hide();
+        // this.show();
         this.draw();
     }
 
@@ -646,10 +646,10 @@ var Canvas = function () {
         value: function eventInit() {
             var _this = this;
 
-            var screenY = window.screen.height;
+            var screenY = window.innerHeight;
             var moveIn = function moveIn(e) {
                 var targetX = e.touches[0].clientX;
-                var targetY = e.touches[0].clientY - (screenY - _this.height);
+                var targetY = e.touches[0].clientY - (screenY - parseInt(_this.canvas.style['height'], 10));
 
                 var _iteratorNormalCompletion = true;
                 var _didIteratorError = false;
@@ -659,7 +659,7 @@ var Canvas = function () {
                     for (var _iterator = _this.buttons[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
                         var i = _step.value;
 
-                        if (i.isTouched(targetX, targetY)) {
+                        if (i.isTouched(targetX * 2, targetY * 2)) {
                             i.touch(_this.ctx);
                             _this.touching = i;
                         } else {
@@ -802,13 +802,14 @@ var Canvas = function () {
         key: 'hide',
         value: function hide() {
             this.isShow = false;
-            this.canvas.height = 0;
+            this.canvas.style['display'] = 'none';
         }
     }, {
         key: 'show',
         value: function show() {
             this.isShow = true;
             this.canvas.height = this.height;
+            this.canvas.style['display'] = 'block';
             this.draw();
         }
     }, {
@@ -819,7 +820,7 @@ var Canvas = function () {
     }, {
         key: 'active',
         value: function active() {
-            return this.isShow && this.windowMouse.clientY >= screen.height - this.height;
+            return this.isShow && this.windowMouse.clientY >= window.innerHeight - this.height / 2;
         }
     }, {
         key: 'clear',

@@ -38,8 +38,8 @@ export default class Canvas {
         this.buttons = this.buttonLayer('low');
         this.eventInit();
 
-        //this.hide();
-        this.show();
+        this.hide();
+        // this.show();
         this.draw();
     };
 
@@ -118,13 +118,13 @@ export default class Canvas {
      * 给canvas绑定事件
      */
     eventInit () {
-        const screenY = window.screen.height;
+        const screenY = window.innerHeight;
         const moveIn = (e) => {
             let targetX = e.touches[0].clientX;
-            let targetY = e.touches[0].clientY - (screenY - this.height);
+            let targetY = e.touches[0].clientY - (screenY - parseInt(this.canvas.style['height'], 10));
 
             for (let i of this.buttons) {
-                if (i.isTouched(targetX, targetY)) {
+                if (i.isTouched(targetX * 2, targetY * 2)) {
                     i.touch(this.ctx);
                     this.touching = i;
                 } else {
@@ -199,12 +199,13 @@ export default class Canvas {
 
     hide () {
         this.isShow = false;
-        this.canvas.height = 0;
+        this.canvas.style['display'] = 'none';
     };
 
     show () {
         this.isShow = true;
         this.canvas.height = this.height;
+        this.canvas.style['display'] = 'block';
         this.draw();
     };
 
@@ -213,7 +214,7 @@ export default class Canvas {
     };
 
     active () {
-        return this.isShow && (this.windowMouse.clientY >= (screen.height - this.height));
+        return this.isShow && (this.windowMouse.clientY >= (window.innerHeight - this.height / 2));
     };
 
     /**
