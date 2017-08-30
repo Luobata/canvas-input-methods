@@ -38,7 +38,8 @@ export default class Canvas {
         this.buttons = this.buttonLayer('low');
         this.eventInit();
 
-        this.hide();
+        //this.hide();
+        this.show();
         this.draw();
     };
 
@@ -52,7 +53,7 @@ export default class Canvas {
             height: 36 * this.rate,
             funcWidth: 40 * this.rate,
             borderRadius: 5,
-            size: '16px',
+            size: 16 * this.rate + 'px',
             family: 'Microsoft yahei',
             weight: 'bold',
             untouchBackground: '#fff',
@@ -76,10 +77,16 @@ export default class Canvas {
     windowInit () {
         const width = document.body.clientWidth;
         const rate = parseInt(width * 12 / 320, 10);
+        const backingStoreRatio = this.ctx.webkitBackingStorePixelRatio ||
+            this.ctx.mozBackingStorePixelRatio ||
+            this.ctx.msBackingStorePixelRatio ||
+            this.ctx.oBackingStorePixelRatio ||
+            this.ctx.backingStorePixelRatio || 1;
+        const devicePixelRatio = window.devicePixelRatio || 1;
 
-        this.rate = rate / 12;
-        this.width = width;
-        this.height = width * 0.8;
+        this.rate = rate / 12 * 2;
+        this.width = width * 2;
+        this.height = width * 0.8 * 2;
     };
 
     /*
@@ -90,6 +97,9 @@ export default class Canvas {
         this.canvas.style.bottom = '0';
         this.canvas.style.left = '0';
         this.canvas.style['box-sizing'] = 'border-box';
+
+        this.canvas.style['width'] = this.width / 2 + 'px';
+        this.canvas.style['height'] = this.height / 2 + 'px';
     };
 
     /**
@@ -173,7 +183,7 @@ export default class Canvas {
         if (!this.isShow) return;
 
         this.ctx.fillStyle = '#d7d8dc';
-        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        this.ctx.fillRect(0, 0, this.canvas.width * this.rate, this.canvas.height * this.rate);
         this.ctx.fill();
 
         for (let i of this.buttons) {

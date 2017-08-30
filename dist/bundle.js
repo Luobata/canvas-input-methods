@@ -552,7 +552,8 @@ var Canvas = function () {
         this.buttons = this.buttonLayer('low');
         this.eventInit();
 
-        this.hide();
+        //this.hide();
+        this.show();
         this.draw();
     }
 
@@ -570,7 +571,7 @@ var Canvas = function () {
                 height: 36 * this.rate,
                 funcWidth: 40 * this.rate,
                 borderRadius: 5,
-                size: '16px',
+                size: 16 * this.rate + 'px',
                 family: 'Microsoft yahei',
                 weight: 'bold',
                 untouchBackground: '#fff',
@@ -597,10 +598,12 @@ var Canvas = function () {
         value: function windowInit() {
             var width = document.body.clientWidth;
             var rate = parseInt(width * 12 / 320, 10);
+            var backingStoreRatio = this.ctx.webkitBackingStorePixelRatio || this.ctx.mozBackingStorePixelRatio || this.ctx.msBackingStorePixelRatio || this.ctx.oBackingStorePixelRatio || this.ctx.backingStorePixelRatio || 1;
+            var devicePixelRatio = window.devicePixelRatio || 1;
 
-            this.rate = rate / 12;
-            this.width = width;
-            this.height = width * 0.8;
+            this.rate = rate / 12 * 2;
+            this.width = width * 2;
+            this.height = width * 0.8 * 2;
         }
     }, {
         key: 'styleInit',
@@ -614,6 +617,9 @@ var Canvas = function () {
             this.canvas.style.bottom = '0';
             this.canvas.style.left = '0';
             this.canvas.style['box-sizing'] = 'border-box';
+
+            this.canvas.style['width'] = this.width / 2 + 'px';
+            this.canvas.style['height'] = this.height / 2 + 'px';
         }
     }, {
         key: 'sizeInit',
@@ -758,7 +764,7 @@ var Canvas = function () {
             if (!this.isShow) return;
 
             this.ctx.fillStyle = '#d7d8dc';
-            this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+            this.ctx.fillRect(0, 0, this.canvas.width * this.rate, this.canvas.height * this.rate);
             this.ctx.fill();
 
             var _iteratorNormalCompletion3 = true;

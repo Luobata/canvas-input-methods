@@ -7,6 +7,8 @@ import commonjs from 'rollup-plugin-commonjs';
 import resolve from 'rollup-plugin-node-resolve';
 import path from 'path';
 import flow from 'rollup-plugin-flow';
+import serve from 'rollup-plugin-serve';
+import livereload from 'rollup-plugin-livereload';
 
 const root = path.resolve(__dirname, './');
 
@@ -20,6 +22,8 @@ module.exports = {
     },
     plugins: [
         // uglify(),
+        serve(),
+        // livereload(),
         resolve(),
         flow(
             {
