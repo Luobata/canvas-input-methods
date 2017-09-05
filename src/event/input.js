@@ -26,7 +26,10 @@ export default class Input {
 
     eventInit () {
         this.el.addEventListener('touchstart', (e) => {
+        });
+        this.el.addEventListener('focus', (e) => {
             this.canvas.show();
+            //this.el.blur();
         });
 
         this.el.addEventListener('blur', (e) => {
@@ -43,6 +46,6 @@ export default class Input {
     };
 
     input (val) {
-        this.el.innerHTML += val;
+        this.el.value += val;
     };
 };

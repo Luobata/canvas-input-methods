@@ -474,8 +474,10 @@ var Input = function () {
         value: function eventInit() {
             var _this = this;
 
-            this.el.addEventListener('touchstart', function (e) {
+            this.el.addEventListener('touchstart', function (e) {});
+            this.el.addEventListener('focus', function (e) {
                 _this.canvas.show();
+                //this.el.blur();
             });
 
             this.el.addEventListener('blur', function (e) {
@@ -494,7 +496,7 @@ var Input = function () {
     }, {
         key: 'input',
         value: function input(val) {
-            this.el.innerHTML += val;
+            this.el.value += val;
         }
     }]);
     return Input;
