@@ -494,7 +494,7 @@ var Input = function () {
     }, {
         key: 'input',
         value: function input(val) {
-            this.el.value += val;
+            this.el.innerHTML += val;
         }
     }]);
     return Input;

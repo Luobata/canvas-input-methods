@@ -43,6 +43,6 @@ export default class Input {
     };
 
     input (val) {
-        this.el.value += val;
+        this.el.innerHTML += val;
     };
 };
