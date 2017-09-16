@@ -159,6 +159,20 @@ export default class Alpha {
             'shift'
         );
 
+        const symbolBtn = gen(
+            '#+=',
+            this.prop.startX,
+            this.getLineHeight(3),
+            'symbol'
+        );
+
+        const numberSymBtn = gen(
+            '123',
+            this.prop.startX,
+            this.getLineHeight(3),
+            'number'
+        );
+
         const deleteBtn = gen(
             '←',
             this.prop.layoutWidth - this.prop.paddingWidth - this.prop.funcWidth,
@@ -174,6 +188,16 @@ export default class Alpha {
             this.prop.startX,
             this.getLineHeight(4),
             'number',
+            {
+                untouchBackground: this.prop.funcColor.normal
+            }
+        );
+
+        const alphaBtn = gen(
+            'ABC',
+            this.prop.startX,
+            this.getLineHeight(4),
+            'alpha',
             {
                 untouchBackground: this.prop.funcColor.normal
             }
@@ -219,6 +243,22 @@ export default class Alpha {
             shiftBtn,
             deleteBtn,
             numberBtn,
+            spaceBtn,
+            sendBtn
+        ]);
+
+        this.func.set('number', [
+            symbolBtn,
+            deleteBtn,
+            alphaBtn,
+            spaceBtn,
+            sendBtn
+        ]);
+
+        this.func.set('symbol', [
+            numberSymBtn,
+            deleteBtn,
+            alphaBtn,
             spaceBtn,
             sendBtn
         ]);

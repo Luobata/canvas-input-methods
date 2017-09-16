@@ -213,6 +213,7 @@ var Button = function () {
 /**
  * @description class canvas 与 class button 中间层
  */
+// 定义私有方法symbol
 var generateArr = Symbol('generateArr');
 var generate = Symbol('generate');
 var generateButton = Symbol('generateButton');
@@ -347,11 +348,19 @@ var Alpha = function () {
 
             var shiftBtn = gen('↑', this.prop.startX, this.getLineHeight(3), 'shift');
 
+            var symbolBtn = gen('#+=', this.prop.startX, this.getLineHeight(3), 'symbol');
+
+            var numberSymBtn = gen('123', this.prop.startX, this.getLineHeight(3), 'number');
+
             var deleteBtn = gen('←', this.prop.layoutWidth - this.prop.paddingWidth - this.prop.funcWidth, this.getLineHeight(3), 'delete', {
                 untouchBackground: this.prop.funcColor.normal
             });
 
             var numberBtn = gen('123', this.prop.startX, this.getLineHeight(4), 'number', {
+                untouchBackground: this.prop.funcColor.normal
+            });
+
+            var alphaBtn = gen('ABC', this.prop.startX, this.getLineHeight(4), 'alpha', {
                 untouchBackground: this.prop.funcColor.normal
             });
 
@@ -371,6 +380,10 @@ var Alpha = function () {
             this.func.set('low', [shiftBtn, deleteBtn, numberBtn, spaceBtn, sendBtn]);
 
             this.func.set('up', [shiftBtn, deleteBtn, numberBtn, spaceBtn, sendBtn]);
+
+            this.func.set('number', [symbolBtn, deleteBtn, alphaBtn, spaceBtn, sendBtn]);
+
+            this.func.set('symbol', [numberSymBtn, deleteBtn, alphaBtn, spaceBtn, sendBtn]);
         }
     }, {
         key: 'getLineHeight',
@@ -545,7 +558,13 @@ var functionInput = function functionInput(type) {
         this.changeLayer('number');
     }
 
-    if (type === 'symbol') {}
+    if (type === 'symbol') {
+        this.changeLayer('symbol');
+    }
+
+    if (type === 'alpha') {
+        this.changeLayer('low');
+    }
 
     if (type === 'send') {}
 };
@@ -854,9 +873,8 @@ var Canvas = function () {
     }, {
         key: 'changeLayer',
         value: function changeLayer(layer) {
-            this.buttonLayer(layer);
+            this.buttons = this.buttonLayer(layer);
             this.draw();
-            debugger;
         }
     }, {
         key: 'hide',
@@ -941,8 +959,6 @@ var inputMethod = {
 
 inputMethod.init('canvas-input-method');
 inputMethod.bind('input');
-
-// module.exports = inputMethod;
 
 return inputMethod;
 

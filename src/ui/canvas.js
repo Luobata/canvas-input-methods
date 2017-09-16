@@ -202,9 +202,8 @@ export default class Canvas {
     };
 
     changeLayer (layer) {
-        this.buttonLayer(layer);
+        this.buttons = this.buttonLayer(layer);
         this.draw();
-        debugger;
     };
 
     hide () {

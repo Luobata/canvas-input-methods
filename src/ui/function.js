@@ -24,6 +24,11 @@ export const functionInput = function (type) {
     }
 
     if (type === 'symbol') {
+        this.changeLayer('symbol');
+    }
+
+    if (type === 'alpha') {
+        this.changeLayer('low');
     }
 
     if (type === 'send') {
