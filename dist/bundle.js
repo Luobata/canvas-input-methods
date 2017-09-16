@@ -57,7 +57,20 @@ var createClass = function () {
 
 
 
+var defineProperty = function (obj, key, value) {
+  if (key in obj) {
+    Object.defineProperty(obj, key, {
+      value: value,
+      enumerable: true,
+      configurable: true,
+      writable: true
+    });
+  } else {
+    obj[key] = value;
+  }
 
+  return obj;
+};
 
 
 
@@ -498,6 +511,11 @@ var Input = function () {
         value: function input(val) {
             this.el.value += val;
         }
+    }, {
+        key: 'deleteOne',
+        value: function deleteOne() {
+            this.el.value = this.el.value.substr(0, this.el.value.length - 1);
+        }
     }]);
     return Input;
 }();
@@ -512,16 +530,54 @@ var functionInput = function functionInput(type) {
         this.changeLowUp();
     }
 
-    if (type === 'delete') {}
+    if (type === 'delete') {
+        this.inputEl.deleteOne();
+    }
 
-    if (type === 'space') {}
+    if (type === 'space') {
+        this.touching = {
+            value: ' '
+        };
+        this.input();
+    }
 
-    if (type === 'number') {}
+    if (type === 'number') {
+        this.changeLayer('number');
+    }
 
     if (type === 'symbol') {}
 
     if (type === 'send') {}
 };
+
+var bodyLock = function () {
+    var originScrollTop,
+        originCssText,
+        win = window,
+        doc = win.document;
+    var forbidFunc = function forbidFunc(e) {
+        e.preventDefault();
+        return false;
+    };
+    var fixedBody = {
+        lock: function lock() {
+            win.addEventListener('touchmove', forbidFunc);
+            win.addEventListener('MSPointerMove', forbidFunc);
+            win.addEventListener('pointermove', forbidFunc);
+            originScrollTop = win.pageYOffset;
+            originCssText = doc.body.style.cssText;
+            //doc.body.style.cssText = 'height: 100vh;background-color: #f5f5f5;position: fixed;top: -999999px;'
+        },
+        unlock: function unlock() {
+            win.removeEventListener('touchmove', forbidFunc);
+            win.removeEventListener('MSPointerMove', forbidFunc);
+            win.removeEventListener('pointermove', forbidFunc);
+            doc.body.style.cssText = originCssText;
+            win.scrollTo(win.pageXOffset, originScrollTop);
+        }
+    };
+    return fixedBody;
+}();
 
 /**
  * @description canvas 画布容器
@@ -567,27 +623,22 @@ var Canvas = function () {
          * 初始化字母区
          */
         value: function alphaInit() {
-            this.alpha = new Alpha({
+            var _ref;
+
+            this.alpha = new Alpha((_ref = {
                 layoutWidth: this.width,
                 width: 27.5 * this.rate,
                 height: 36 * this.rate,
                 funcWidth: 40 * this.rate,
                 borderRadius: 5,
-                size: 16 * this.rate + 'px',
-                family: 'Microsoft yahei',
-                weight: 'bold',
-                untouchBackground: '#fff',
-                untouchColor: '#000',
-                touchBackground: '#000',
-                touchColor: '#fff',
-                paddingWidth: 4 * this.rate,
-                paddingHeight: 8 * this.rate,
-                startY: 10,
-                funcColor: {
-                    normal: '#aab2bd',
-                    special: '#007aff'
-                }
-            }, this.rate, this.ctx);
+                size: 20 * this.rate + 'px',
+                family: 'Microsoft yahei'
+            }, defineProperty(_ref, 'family', 'consolas'), defineProperty(_ref, 'weight', 'bold'), defineProperty(_ref, 'untouchBackground', '#fff'), defineProperty(_ref, 'untouchColor', '#000'), defineProperty(_ref, 'touchBackground', '#000'), defineProperty(_ref, 'touchColor', '#fff'), defineProperty(_ref, 'paddingWidth', 4 * this.rate), defineProperty(_ref, 'paddingHeight', 8 * this.rate), defineProperty(_ref, 'startY', 10), defineProperty(_ref, 'funcColor', {
+                normal: '#aab2bd',
+                special: '#007aff'
+            }), _ref), this.rate, this.ctx);
+
+            this.height = this.alpha.prop.height * 4 + this.alpha.prop.paddingHeight * 3 + this.alpha.prop.startY * 2;
             console.log(this.alpha);
         }
     }, {
@@ -801,14 +852,23 @@ var Canvas = function () {
             this.draw();
         }
     }, {
+        key: 'changeLayer',
+        value: function changeLayer(layer) {
+            this.buttonLayer(layer);
+            this.draw();
+            debugger;
+        }
+    }, {
         key: 'hide',
         value: function hide() {
+            bodyLock.unlock();
             this.isShow = false;
             this.canvas.style['display'] = 'none';
         }
     }, {
         key: 'show',
         value: function show() {
+            bodyLock.lock();
             this.isShow = true;
             this.canvas.height = this.height;
             this.canvas.style['display'] = 'block';

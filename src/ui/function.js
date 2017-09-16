@@ -9,12 +9,18 @@ export const functionInput = function (type) {
     }
 
     if (type === 'delete') {
+        this.inputEl.deleteOne();
     }
 
     if (type === 'space') {
+        this.touching = {
+            value: ' '
+        }
+        this.input();
     }
 
     if (type === 'number') {
+        this.changeLayer('number');
     }
 
     if (type === 'symbol') {

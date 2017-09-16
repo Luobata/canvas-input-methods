@@ -48,4 +48,8 @@ export default class Input {
     input (val) {
         this.el.value += val;
     };
+
+    deleteOne () {
+        this.el.value = this.el.value.substr(0, this.el.value.length - 1);
+    };
 };

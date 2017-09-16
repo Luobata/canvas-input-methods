@@ -39,6 +39,7 @@ module.exports = {
         }),
         alias({
             UI: path.resolve(__dirname, '../src/ui'),
+            UTIL: path.resolve(__dirname, '../src/util'),
             EVENT: path.resolve(__dirname, '../src/event')
         })
     ]

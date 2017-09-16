@@ -7,6 +7,7 @@ import Alpha from 'UI/alpha';
 import Input from 'EVENT/input';
 
 import { functionInput } from 'UI/function';
+import { bodyLock } from 'UTIL/index';
 
 export default class Canvas {
 
@@ -53,8 +54,9 @@ export default class Canvas {
             height: 36 * this.rate,
             funcWidth: 40 * this.rate,
             borderRadius: 5,
-            size: 16 * this.rate + 'px',
+            size: 20 * this.rate + 'px',
             family: 'Microsoft yahei',
+            family: 'consolas',
             weight: 'bold',
             untouchBackground: '#fff',
             untouchColor: '#000',
@@ -68,6 +70,8 @@ export default class Canvas {
                 special: '#007aff'
             }
         }, this.rate, this.ctx);
+
+        this.height = this.alpha.prop.height * 4 + this.alpha.prop.paddingHeight * 3 + this.alpha.prop.startY * 2;
         console.log(this.alpha);
     };
 
@@ -197,12 +201,20 @@ export default class Canvas {
         this.draw();
     };
 
+    changeLayer (layer) {
+        this.buttonLayer(layer);
+        this.draw();
+        debugger;
+    };
+
     hide () {
+        bodyLock.unlock();
         this.isShow = false;
         this.canvas.style['display'] = 'none';
     };
 
     show () {
+        bodyLock.lock();
         this.isShow = true;
         this.canvas.height = this.height;
         this.canvas.style['display'] = 'block';
