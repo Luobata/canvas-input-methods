@@ -32,5 +32,6 @@ export const functionInput = function (type) {
     }
 
     if (type === 'send') {
+        this.inputEl.sendFn();
     }
 };

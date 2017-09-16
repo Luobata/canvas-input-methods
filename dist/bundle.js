@@ -213,7 +213,6 @@ var Button = function () {
 /**
  * @description class canvas 与 class button 中间层
  */
-// 定义私有方法symbol
 var generateArr = Symbol('generateArr');
 var generate = Symbol('generate');
 var generateButton = Symbol('generateButton');
@@ -472,11 +471,12 @@ var Alpha = function () {
  */
 
 var Input = function () {
-    function Input(el, canvas) {
+    function Input(el, canvas, sendFn) {
         classCallCheck(this, Input);
 
         this.canvas = canvas;
         this.el = el;
+        this.sendFn = sendFn;
 
         this.init();
     }
@@ -566,7 +566,9 @@ var functionInput = function functionInput(type) {
         this.changeLayer('low');
     }
 
-    if (type === 'send') {}
+    if (type === 'send') {
+        this.inputEl.sendFn();
+    }
 };
 
 var bodyLock = function () {
@@ -657,7 +659,8 @@ var Canvas = function () {
                 special: '#007aff'
             }), _ref), this.rate, this.ctx);
 
-            this.height = this.alpha.prop.height * 4 + this.alpha.prop.paddingHeight * 3 + this.alpha.prop.startY * 2;
+            // ios下头有一条完成的条 影响高度
+            this.height = this.alpha.prop.height * 4 + this.alpha.prop.paddingHeight * 3 + this.alpha.prop.startY * 2 + 90;
             console.log(this.alpha);
         }
     }, {
@@ -927,14 +930,14 @@ var _init = (function (canvas, ctx) {
 /**
  * @description 绑定dom
  */
-var input = (function (dom, canvas) {
+var input = (function (dom, canvas, sendFn) {
     var input = document.getElementById(dom);
     if (!input) {
         console.error("can't find the binding input dom");
         return;
     }
 
-    new Input(input, canvas);
+    new Input(input, canvas, sendFn);
 });
 
 var global_canvas = void 0;
@@ -949,16 +952,20 @@ var inputMethod = {
             global_canvas = _init(canvas, ctx);
         }
     },
-    bind: function bind(dom) {
+    bind: function bind(dom, sendFn) {
         if (!global_canvas) {
             console.error('init canvas first');
         }
-        input(dom, global_canvas);
+        input(dom, global_canvas, sendFn);
     }
 };
 
 inputMethod.init('canvas-input-method');
-inputMethod.bind('input');
+inputMethod.bind('input', function () {
+    console.log(1);
+});
+
+// module.exports = inputMethod;
 
 return inputMethod;
 

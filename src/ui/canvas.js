@@ -71,7 +71,8 @@ export default class Canvas {
             }
         }, this.rate, this.ctx);
 
-        this.height = this.alpha.prop.height * 4 + this.alpha.prop.paddingHeight * 3 + this.alpha.prop.startY * 2;
+        // ios下头有一条完成的条 影响高度
+        this.height = this.alpha.prop.height * 4 + this.alpha.prop.paddingHeight * 3 + this.alpha.prop.startY * 2 + 90;
         console.log(this.alpha);
     };
 

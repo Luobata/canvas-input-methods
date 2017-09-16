@@ -13,16 +13,18 @@ const inputMethod = {
             global_canvas = init(canvas, ctx);
         }
     },
-    bind (dom) {
+    bind (dom, sendFn) {
         if (!global_canvas) {
             console.error('init canvas first');
         }
-        input(dom, global_canvas);
+        input(dom, global_canvas, sendFn);
     }
 };
 
 inputMethod.init('canvas-input-method');
-inputMethod.bind('input');
+inputMethod.bind('input', () => {
+    console.log(1);
+});
 
 // module.exports = inputMethod;
 export default inputMethod;

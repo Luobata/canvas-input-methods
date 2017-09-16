@@ -4,10 +4,12 @@
 
 export default class Input {
     value: string;
+    sendFn: Function;
 
-    constructor (el, canvas) {
+    constructor (el, canvas, sendFn) {
         this.canvas = canvas;
         this.el = el;
+        this.sendFn = sendFn;
 
         this.init();
     };
